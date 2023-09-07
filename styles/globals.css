@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*{
+    padding: 0px;
+    margin: 0px;
+}
+
+/* .ProductOnCategory-CartBtn{
+    display: none;
+}
+
+.ProductOnCategory:hover .ProductOnCategory-CartBtn{
+    display: block !important;
+} */
+
+.orderParent:hover .indicator {
+    background-color: #F46197;
+}
