@@ -1,6 +1,7 @@
 "use client";
 import IconifyIcon from "@/app/components/icon";
 import {
+  OfflineProductOnCartView,
   ProductOnCartView,
   ProductOnCategory,
 } from "@/app/components/templates/productTemplates";
@@ -19,16 +20,27 @@ import useSWR from "swr";
 import Image from "next/image";
 import { useData } from "@/app/hooks/useData";
 import { useRouter } from "next/navigation";
+import { addOrderApi, orderHandler } from "@/app/redux/state/slices/home/order";
+import { useDispatch } from "react-redux";
+import { useState } from "react";
 
 const ShopPage = ({ params }) => {
+  const { cart, cartData, offline, handleLocalCartChange } = useData();
   const route = useRouter();
+  const dispatch = useDispatch();
+
+
+
+  const [payload, updatePayload] = useState({
+    discount: 10,
+    shippingAddress: {},
+    deliveryDateSpan: "7_days",
+    paymentInfo: {},
+  });
+
   const { data, loading, error } = useSWR(
     `/products?category=${params.category.replace("-", " ")}`
   );
-
-  const { cart } = useData();
-
-  const cartProducts = cart?.products?.map((x) => x.productId) || [];
 
   const CustomTextField = styled(TextField)({
     "& .MuiOutlinedInput-root": {
@@ -121,7 +133,8 @@ const ShopPage = ({ params }) => {
                     {item && (
                       <ProductOnCategory
                         product={item}
-                        cartProducts={cartProducts}
+                        cartProducts={cart}
+                        handleLocalCartChange={handleLocalCartChange}
                       />
                     )}
                   </Grid>
@@ -130,69 +143,80 @@ const ShopPage = ({ params }) => {
           </Grid>
 
           <Grid item xs={12} md={3} lg={2.5}>
-          <Box className="bg-white rounded-xl py-4 sm:!px-4">
-            <Box className="flex items-center mb-4">
-              <IconifyIcon icon="tabler:search" />
-              <Typography variant="body-2" className="!ml-3">
-                Cart (3)
-              </Typography>
-            </Box>
-            {cart?.products?.map((cart, i) => (
-              <ProductOnCartView key={i} products={cart} />
-            ))}
+            <Box className="bg-white rounded-xl py-4 sm:!px-4">
+              <Box className="flex items-center mb-4">
+                <IconifyIcon icon="tabler:search" />
+                <Typography variant="body-2" className="!ml-3">
+                  Cart ({!offline ? cartData?.products?.length : cart.length})
+                </Typography>
+              </Box>
+              {!offline ? (
+                cartData?.products?.map((cart, i) => (
+                  <ProductOnCartView key={i} products={cart} />
+                ))
+              ) : cart.length > 0 ? (
+                cart.map((item, i) => (
+                  <Grid item xs={12} md={6} lg={4} key={i}>
+                    <OfflineProductOnCartView product={item} />
+                  </Grid>
+                ))
+              ) : (
+                <h4>No cart</h4>
+              )}
 
-            <Box className="flex items-center justify-between mb-1 mt-8 !text-[12px]">
-              <Typography variant="caption" className="!ml-3 !font-bold">
-                Sub-Total
-              </Typography>
+              <Box className="flex items-center justify-between mb-1 mt-8 !text-[12px]">
+                <Typography variant="caption" className="!ml-3 !font-bold">
+                  Sub-Total
+                </Typography>
 
-              <Typography variant="caption" className="!font-bold">
-                <span className="!text-[10px]">$</span>
-                {cart?.sum_price}
-              </Typography>
-            </Box>
-            <Box className="flex items-center justify-between">
-              <Typography variant="caption" className="!ml-3">
-                Tax (2%)
-              </Typography>
+                <Typography variant="caption" className="!font-bold">
+                  <span className="!text-[10px]">$</span>
+                  {cart?.sum_price}
+                </Typography>
+              </Box>
+              <Box className="flex items-center justify-between">
+                <Typography variant="caption" className="!ml-3">
+                  Tax (2%)
+                </Typography>
 
-              <Typography variant="caption" className="!font-bold">
-                <span className="text-[10px]">$</span>
-                14
-              </Typography>
-            </Box>
-            <Box className="border-t-2 my-4 border-dashed"></Box>
-            <Box className="flex items-center justify-between mb-1 mt-8 !text-[12px]">
-              <Typography variant="caption" className="!ml-3 !font-bold">
-                Total
-              </Typography>
+                <Typography variant="caption" className="!font-bold">
+                  <span className="text-[10px]">$</span>
+                  14
+                </Typography>
+              </Box>
+              <Box className="border-t-2 my-4 border-dashed"></Box>
+              <Box className="flex items-center justify-between mb-1 mt-8 !text-[12px]">
+                <Typography variant="caption" className="!ml-3 !font-bold">
+                  Total
+                </Typography>
 
-              <Typography variant="caption" className="!font-bold">
-                <span className="!text-[10px]">$</span>
-                742.75
-              </Typography>
-            </Box>
-            <Box className="!mt-8">
-              <Typography variant="body-2" className="!font-bold">
-                Shipping Address
-              </Typography>
+                <Typography variant="caption" className="!font-bold">
+                  <span className="!text-[10px]">$</span>
+                  742.75
+                </Typography>
+              </Box>
+              <Box className="!mt-8">
+                <Typography variant="body-2" className="!font-bold">
+                  Shipping Address
+                </Typography>
 
+                <Button
+                  variant="contained"
+                  className="!bg-white !text-xs !text-gray-500 !h-12 !mt-3 !shadow-none !rounded-2xl !border-dashed !border-2"
+                  startIcon={<IconifyIcon icon="tabler:shopping-cart" />}
+                >
+                  Add Shipping Address
+                </Button>
+              </Box>
               <Button
                 variant="contained"
-                className="!bg-white !text-xs !text-gray-500 !h-12 !mt-3 !shadow-none !rounded-2xl !border-dashed !border-2"
-                startIcon={<IconifyIcon icon="tabler:shopping-cart" />}
+                fullWidth
+                className="!h-12 !text-xs !mt-14 !rounded-full"
+                onClick={() => orderHandler(payload, dispatch)}
               >
-                Add Shipping Address
+                Proceed to payment
               </Button>
             </Box>
-            <Button
-              variant="contained"
-              fullWidth
-              className="!h-12 !text-xs !mt-14 !rounded-full"
-            >
-              Proceed to payment
-            </Button>
-          </Box>
           </Grid>
         </Grid>
       </Box>

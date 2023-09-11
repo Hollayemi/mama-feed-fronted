@@ -14,33 +14,35 @@ const { Box, Typography, Divider } = require("@mui/material");
 const OrderPage = ({ children }) => {
   return (
     <HomeWrapper>
-      <Box className="flex items-center h-10 bg-white rounded-full !mx-16">
-        <Link href="/orders">
-          <Typography
-            variant="body1"
-            className="!font-normal !mx-10 border-b-2 cursor-pointer border-transparent hover:border-pink-500"
-          >
-            Orders
-          </Typography>
-        </Link>
-        <Link href="/orders/returns">
-          <Typography
-            variant="body1"
-            className="!font-normal !mx-10 border-b-2 cursor-pointer border-transparent hover:border-pink-500"
-          >
-            Returns
-          </Typography>
-        </Link>
-        <Link href="/orders/pending-reviews">
-          <Typography
-            variant="body1"
-            className="!font-normal !mx-10 border-b-2 cursor-pointer border-transparent hover:border-pink-500"
-          >
-            Pending Reviews
-          </Typography>
-        </Link>
+      <Box className="!px-2 md:!px-16">
+        <Box className="flex items-center h-10 bg-white rounded-full">
+          <Link href="/orders">
+            <Typography
+              variant="body1"
+              className="!font-normal !mx-4 md:!mx-10 border-b-2 cursor-pointer border-transparent hover:border-pink-500"
+            >
+              Orders
+            </Typography>
+          </Link>
+          <Link href="/orders/returns">
+            <Typography
+              variant="body1"
+              className="!font-normal !mx-4 md:!mx-10 border-b-2 cursor-pointer border-transparent hover:border-pink-500"
+            >
+              Returns
+            </Typography>
+          </Link>
+          <Link href="/orders/pending-reviews">
+            <Typography
+              variant="body1"
+              className="!font-normal !mx-4 md:!mx-10 border-b-2 cursor-pointer border-transparent hover:border-pink-500"
+            >
+              Pending Reviews
+            </Typography>
+          </Link>
+        </Box>
+        <Box className="mt-5 ">{children}</Box>
       </Box>
-      <Box className="!px-16 mt-5 ">{children}</Box>
     </HomeWrapper>
   );
 };

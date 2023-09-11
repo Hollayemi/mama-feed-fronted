@@ -25,14 +25,10 @@ const pages = ["Home", "Shop", "About-us", "Contact-Us"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 function HomeTopBar() {
-  const genData = useData();
+  const {cart} = useData();
   const theme = useTheme();
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
-
-  const cartNum = isLoggedIn()
-    ? genData?.cart?.products?.length || 0
-    : localStorage.getItem("offline-cart")?.split("+")?.length - 1 || 0;
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -168,7 +164,7 @@ function HomeTopBar() {
           <Box className="flex-grow-0 !flex !items-center">
             <Chip
               sx={{ backgroundColor: theme.palette.primary.main }}
-              label={<MyCartBtn variant="contained" num={cartNum} />}
+              label={<MyCartBtn variant="contained" num={cart.length} />}
               size="small"
             />
             <Button

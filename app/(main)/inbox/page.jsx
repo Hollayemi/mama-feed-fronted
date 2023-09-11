@@ -6,7 +6,7 @@ import IconifyIcon from "@/app/components/icon";
 const Inbox = () => {
   return (
     <HomeWrapper>
-      <Box className="!py-6 !px-16">
+      <Box className="px-2 md:!py-6 md:!px-16">
         <Grid container spacing={2}>
           <Grid item xs={12} sm={3.5}>
             <Box className="bg-white !rounded-xl p-2">
@@ -84,6 +84,7 @@ const Inbox = () => {
                   />
                 </Box>
               </Box>
+
             </Box>
           </Grid>
         </Grid>

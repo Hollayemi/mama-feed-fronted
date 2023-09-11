@@ -83,7 +83,7 @@ const GeneralDetails = () => {
                       </Grid>
                     </Grid>
                   </Box>
-                  <Box className="flex justify-end mt-16">
+                  <Box className="flex md:justify-end mt-16">
                     <Button variant="contained" className="!h-10 !rounded-full !text-xs w-52">Save Changes</Button>
                   </Box>
                 </Grid>

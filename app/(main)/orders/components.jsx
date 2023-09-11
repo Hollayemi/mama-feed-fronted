@@ -3,7 +3,15 @@ import { formatCurrency } from "@/app/utils/format";
 
 const { Box, Typography } = require("@mui/material");
 
-export const OrderBriefLeftContentSample = ({ orderId, price, unit, at, type }) => {
+export const OrderBriefLeftContentSample = ({
+  orderId,
+  price,
+  unit,
+  at,
+  type,
+  onClick,
+  selected,
+}) => {
   const Stage = ({ at = 0 }) => {
     return (
       <Box className="flex items-center">
@@ -29,8 +37,15 @@ export const OrderBriefLeftContentSample = ({ orderId, price, unit, at, type }) 
     );
   };
   return (
-    <Box className="flex items-end justify-between border-b orderParent relative border-gray-200 cursor-pointer px-3 pb-3 mb-3">
-      <Box className="w-1 h-full absolute top-0 indicator -mt-1 -left-4 bg-transparent transition-all"></Box>
+    <Box
+      onClick={onClick}
+      className="flex items-end justify-between border-b orderParent relative border-gray-200 cursor-pointer px-3 pb-3 mb-3"
+    >
+      <Box
+        className={`w-1 h-full absolute top-0 indicator -mt-1 -left-4 transition-all ${
+          selected ? "bg-pink-500" : "bg-transparent"
+        }`}
+      ></Box>
       <Box>
         <Typography variant="body2" className="!font-bold !text-[16px] !mt-3">
           {orderId}
@@ -42,56 +57,60 @@ export const OrderBriefLeftContentSample = ({ orderId, price, unit, at, type }) 
           {unit} Items
         </Typography>
       </Box>
-      {type !== "reviews" ? <Box>
-        <Box className="flex items-center ml-2">
-          <IconifyIcon icon="tabler:truck-delivery" className="text-pink-500" />
-          <Typography
-            variant="caption"
-            className="!text-[13px] !ml-2 text-pink-500 "
-          >
-            5 In Progress
-          </Typography>
+      {type !== "reviews" ? (
+        <Box>
+          <Box className="flex items-center ml-2">
+            <IconifyIcon
+              icon="tabler:truck-delivery"
+              className="text-pink-500"
+            />
+            <Typography
+              variant="caption"
+              className="!text-[13px] !ml-2 text-pink-500 "
+            >
+              5 In Progress
+            </Typography>
+          </Box>
+          <Stage at={at} />
         </Box>
-        <Stage at={at} /> 
-      </Box>
-      : <Typography variant="body2" className="!font-bold !text-[14px] !mt-3">
-      Completed
-    </Typography>}
+      ) : (
+        <Typography variant="body2" className="!font-bold !text-[14px] !mt-3">
+          Completed
+        </Typography>
+      )}
     </Box>
   );
 };
 
-export const OrderLeftSide = ({ type }) => {
+export const OrderLeftSide = ({ type, data, setDisplay, display }) => {
+  console.log(display.orderSlug);
+  let realData;
+  if (data) {
+    if (typeof window !== "undefined" && window.screen.width < 959) {
+      if (display.orderSlug) {
+        realData = data.data.filter((x) => x.orderSlug === display.orderSlug);
+      } else {
+        realData = data?.data;
+      }
+    }else{
+      realData = data?.data;
+    }
+  }
   return (
     <Box className="">
-      <OrderBriefLeftContentSample
-        orderId="#457718"
-        at={3}
-        unit={1}
-        price={240930.34}
-        type={type}
-      />
-      <OrderBriefLeftContentSample
-        orderId="#762718"
-        at={2}
-        unit={8}
-        price={13434.46}
-        type={type}
-      />
-      <OrderBriefLeftContentSample
-        orderId="#547658"
-        at={4}
-        unit={5}
-        price={10024.34}
-        type={type}
-      />
-      <OrderBriefLeftContentSample
-        orderId="#362718"
-        at={1}
-        unit={4}
-        price={114656}
-        type={type}
-      />
+      {realData &&
+        realData.map((item, i) => (
+          <OrderBriefLeftContentSample
+            orderId={item.orderSlug}
+            selected={display?.orderSlug === item.orderSlug}
+            key={i}
+            at={3}
+            unit={item.order_items.items}
+            price={item.order_items.totalAmount}
+            type={type}
+            onClick={() => setDisplay(item)}
+          />
+        ))}
     </Box>
   );
 };

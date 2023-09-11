@@ -13,23 +13,23 @@ const SwiperCentered = ({ direction, children }) => {
   const [loaded, setLoaded] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   // ** Hook
-  const [ref] = useKeenSlider({
-    rtl: direction === "rtl",
-    controls: true,
-    loop: true,
-    centered: true,
-    initial: 0,
-    slides: {
-      perView:
-        typeof window !== "undefined" && window.innerWidth > 1000
-          ? 4
-          : window.innerWidth < 760
-          ? 3
-          : 1,
-      spacing: 20,
-      origin: "center",
-    },
-  });
+  // const [ref] = useKeenSlider({
+  //   rtl: direction === "rtl",
+  //   controls: true,
+  //   loop: true,
+  //   centered: true,
+  //   initial: 0,
+  //   slides: {
+  //     perView:
+  //       typeof window !== "undefined" && window.innerWidth > 1000
+  //         ? 4
+  //         : window.innerWidth < 760
+  //         ? 3
+  //         : 1,
+  //     spacing: 20,
+  //     origin: "center",
+  //   },
+  // });
 
   return (
     <ReactSlickSlider>

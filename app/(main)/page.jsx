@@ -25,31 +25,15 @@ import useSWR from "swr";
 import { useState } from "react";
 import { useData } from "../hooks/useData";
 import { isLoggedIn } from "../redux/state/slices/api/setAuthHeaders";
+import CountdownTimer from "./countDown";
+import { calculateDateDiff } from "../utils/format";
 
 const HomePage = () => {
   const { data, loading, error } = useSWR("/products");
-  const genData = useData();
-  const cartProducts = genData.cart?.products?.map((x) => x.productId) || [];
+  const { cart, handleLocalCartChange } = useData();
+  
 
-
-  const [localCart, setLocalCart] = useState(localStorage.getItem("offline-cart")?.split("+") || []);
-  const myCart = isLoggedIn() ? cartProducts : localCart
-
-  const handleCartChange = (id) => {
-    if (!isLoggedIn()) {
-      if (localCart.includes(id)) {
-        setLocalCart((prev) => {
-          const NewCart = localStorage.getItem("offline-cart")?.split("+");
-          return [...NewCart];
-        });
-      } else {
-        setLocalCart(() => {
-          const prev = localStorage.getItem("offline-cart")?.split("+") || [];
-          return [...prev];
-        });
-      }
-    }
-  };
+ 
 
   const CheckList = ({ name }) => (
     <Box className="flex items-center">
@@ -205,19 +189,19 @@ const HomePage = () => {
             </Link>
           </Box>
           {!loading && !error ? (
-            <Box className="">
+            <Box className="flex justify-center">
               <Grid container spacing={1}>
                 {data?.data?.map((item, i) => (
-                  <Grid item xs={6} key={i} sm={4} md={2} className="!mb-14">
+                  <Grid item xs={6} key={i} sm={4} md={2.5} className="!mb-14">
                     <ProductOnShowcase
                       image={item.images[0].image}
                       prodName={item.prodName}
                       category={item.category}
                       star={item.star}
                       price={item.prodPrice}
-                      inCart={myCart?.includes(item._id)}
+                      inCart={cart?.includes(item._id)}
                       id={item._id}
-                      handleCartChange={handleCartChange}
+                      handleLocalCartChange={handleLocalCartChange}
                     />
                   </Grid>
                 ))}
@@ -234,13 +218,15 @@ const HomePage = () => {
               Flash Sales Items
             </Typography>
 
-            <Typography className="text-[11px] text-pink-500 text-center mt-8">
+            <Typography className="text-[11px] text-pink-500 text-center !my-5">
               Ends in
             </Typography>
           </Box>
 
-          <Box className="flex justify-center">
-            <Box className="w-11/12 md:w-4/5">
+          <CountdownTimer initialDate={new Date()} daysToCount={2} />
+
+          <Box className="flex justify-center mt-8">
+            <Box className="w-11/12 md:w-4/5 !h-80">
               <SwiperCentered>
                 <ProductOnShowcase
                   image="/images/more/1.png"
@@ -334,7 +320,7 @@ const HomePage = () => {
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
                 <img
-                  src="/images/more/maternity.png"
+                  src="/images/more/Maternity.png"
                   alt="product_image"
                   className="!w-full h-[350px] md:h-[550px] rounded-md"
                 />

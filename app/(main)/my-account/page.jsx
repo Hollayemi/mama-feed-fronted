@@ -7,6 +7,7 @@ import { useState } from "react";
 import GeneralDetails from "./pages/generalDetails";
 import Notification from "./pages/notification";
 import Security from "./pages/security";
+import ShippingAddress from "./pages/address";
 
 const MyAccount = () => {
   const [showing, setShowing] = useState("General Details")
@@ -15,11 +16,12 @@ const MyAccount = () => {
     general_details: <GeneralDetails />,
     notification: <Notification />,
     password_and_security: <Security />,
+    billing_and_address: <ShippingAddress />
   }
 
   return (
     <HomeWrapper>
-      <Box className="!py-6 !px-16">
+      <Box className="my-2 md:!py-6 px-2 md:!px-16">
         <Grid container spacing={2}>
           <Grid item xs={12} sm={3}>
             <Box className="bg-white !rounded-xl p-2 py-6">

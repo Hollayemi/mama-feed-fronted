@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 // ** React Imports
 import { useState } from 'react'
 
@@ -21,7 +22,7 @@ import { rows } from '@/app/data/store/productData'
 // ** renders client column
 
 
-const renderClient = params => {
+const RenderClient = params => {
   const { row } = params
   const stateNum = Math.floor(Math.random() * 6)
   const states = ['success', 'error', 'warning', 'info', 'primary', 'secondary']
@@ -69,7 +70,7 @@ const columns = [
 
       return (
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          {renderClient(params)}
+          <RenderClient params={params} />
           <Box sx={{ display: "flex", flexDirection: "column" }}>
             <Typography
               noWrap

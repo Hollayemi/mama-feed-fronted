@@ -2,7 +2,7 @@
 import AuthLayout from "@/app/components/layouts/AuthLayouts";
 import { usePathname } from 'next/navigation';
 
-export const metadata = {
+const metadata = {
   title: "auth - Mama Feed",
   description: "Showcase your store now",
 };

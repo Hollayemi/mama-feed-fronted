@@ -9,5 +9,5 @@ export const jsonHeader = () => {
 };
 
 export const isLoggedIn = () => {
-    return Boolean(localStorage.getItem('user_token'))
+    return Boolean(typeof window !== 'undefined' && localStorage.getItem('user_token'))
 }

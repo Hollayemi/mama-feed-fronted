@@ -4,7 +4,7 @@ import { useState } from "react";
 const EachSwitch = ({ title, brief, btnName, func }) => {
   return (
     <Box className="!flex !justify-between !items-center !mb-6">
-      <Box className="w-3/5">
+      <Box className="w-4/6 md:w-3/5">
         <Typography variant="body2" className="!text-[15px] !mb-2 !font-bold">
           {title}
         </Typography>
@@ -12,7 +12,7 @@ const EachSwitch = ({ title, brief, btnName, func }) => {
           {brief}
         </Typography>
       </Box>
-      <Button variant="outlined" className="!text-xs !w-32" onClick={func}>
+      <Button variant="outlined" className="!text-xs md:!w-32" onClick={func}>
         {btnName}
       </Button>
     </Box>
@@ -52,7 +52,7 @@ const All = ({ setShowing }) => {
       </Typography>
       <br />
 
-      <Box className=" pl-5 pr-10">
+      <Box className="md:pl-5 md:pr-10">
         <EachSwitch
           btnName="Enable"
           title="Two Factor Authentication"
@@ -94,7 +94,7 @@ const Password = () => {
         Password and Secutiry
       </Typography>
       <br />
-      <Box className="!w-80 ml-4">
+      <Box className="md:!w-80 md:ml-4">
         <TextField
           sx={{ mb: 2 }}
           size="medium"

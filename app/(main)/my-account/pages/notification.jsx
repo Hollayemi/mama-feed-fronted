@@ -50,7 +50,7 @@ const Notification = () => {
       </Typography>
       <br />
 
-      <Box className=" pl-5 pr-10">
+      <Box className=" md:pl-5 pr-4 md:pr-10">
         <EachSwitch
           title="Login Alerts"
           brief="Notifications on successful log ins to your account"

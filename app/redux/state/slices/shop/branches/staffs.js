@@ -206,14 +206,6 @@ export const updateStaffAuth = (dispatch, payload) => {
   dispatch(updateStaffAuthApi(payload))
     .then(unwrapResult)
     .then((res) => {
-      toaster.push(
-        <Message showIcon delay={10000} type={res.type}>
-          {res.message}
-        </Message>,
-        {
-          placement: "topEnd",
-        }
-      );
       if (res.type === "success") {
         dispatch(storeLogout());
       }
