@@ -8,7 +8,6 @@ const admin_signin = createAsyncThunk("post/admin_signin", async (payload) => {
     .post("/adminLogin", payload, {})
     .then((res) => {
       const { accessToken, ...others } = res.data;
-      localStorage.setItem("xmart_token", accessToken);
       return others;
     })
     .catch((err) => err.response.data);

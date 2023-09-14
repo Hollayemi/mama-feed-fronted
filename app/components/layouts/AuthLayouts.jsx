@@ -21,8 +21,8 @@ export default function AuthLayout({ children, reverse, image, ...others }) {
           <Image
             src={image || "/images/more/auth-baby.png"}
             alt="auth-mage"
-            width={200}
-            height={200}
+            width={1500}
+            height={1500}
             className="!w-full !h-full"
           />
         </Box>

@@ -28,6 +28,7 @@ const escapeRegExp = value => {
 
 const OrderTable = ({ columns, rows, onRowClick = () => {} }) => {
   const myRows = rows.map((e, i) => {return { ...e, id: i }})
+  console.log(myRows);
   // ** States
   const [data] = useState(myRows);
   const [pageSize, setPageSize] = useState(7)

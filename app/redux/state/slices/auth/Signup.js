@@ -12,7 +12,8 @@ export const RegNewUser = createAsyncThunk(
             .then((e) => {
                 console.log(e)
                 const { token } = e.data;
-                localStorage.setItem("user_token", token);
+                typeof window !== "undefined" &&
+                  localStorage.setItem("user_token", token);
                 return e;
             })
             .catch((err) => {

@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, unwrapResult } from "@reduxjs/toolkit";
 import toaster from "@/app/configs/toaster";
 import martApi from "../../api/baseApi";
-import { isLoggedIn, jsonHeader } from "../../api/setAuthHeaders";
+import { isLoggedIn, jsonHeader} from "../../api/setAuthHeaders";
 import { mutate } from "swr"
 
 export const addCart = createAsyncThunk("post/myCart", async (payload) => {
@@ -32,13 +32,16 @@ export const cartHandler = (payload, dispatch) => {
       .catch((e) => {});
   } else {
     const myOfflineCart =
-      localStorage.getItem("offline-cart")?.split("+") || [];
+      (typeof window !== "undefined" &&
+        localStorage.getItem("offline-cart")?.split("+")) ||
+      [];
     let newCart = [];
     if (myOfflineCart.includes(payload.productId)) {
       newCart = myOfflineCart.filter((id) => id !== payload.productId);
     } else {
       newCart = [...myOfflineCart, payload.productId];
     }
-    localStorage.setItem("offline-cart", newCart.join("+"));
+    typeof window !== "undefined" &&
+      localStorage.setItem("offline-cart", newCart.join("+"));
   }
 };

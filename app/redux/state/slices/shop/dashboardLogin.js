@@ -25,7 +25,6 @@ export const dasboardLoginHandler = (payload, dispatch, navigate) => {
       toaster({ ...res });
       if (res.type === "success") {
         const { accessToken, staffStatus } = res;
-        localStorage.setItem("store_token", accessToken);
         await dispatch(getShopInfo());
         await dispatch(myBusinessFiles());
         if (staffStatus === "waiting" || staffStatus === "created") {

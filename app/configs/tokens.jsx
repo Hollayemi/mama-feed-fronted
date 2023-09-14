@@ -19,7 +19,7 @@ const tokens = {
   store:
     typeof window !== "undefined" ? (production ? remote_store : store) : null,
   corislo:
-    typeof window !== "undefined" ? localStorage.getItem("xmart_token") : null,
+    typeof window !== "undefined" ? '' : null,
 };
 
 export default tokens;

@@ -1,9 +1,8 @@
+/* eslint-disable import/no-anonymous-default-export */
 import toaster from "@/app/configs/toaster";
 import "toasted-notes/src/styles.css";
 
 const redirect = () => {
-  localStorage.setItem("user_token", null);
-  localStorage.setItem("store_token", null);
   toaster({ type:"error", message: "Redirecting to Login" });
   setTimeout(() => (window.location.href = "/login"), 1000);
 };

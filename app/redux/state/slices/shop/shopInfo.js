@@ -11,7 +11,6 @@ export const getShopInfo = createAsyncThunk("post/getShopInfo", async () => {
     .get(`/store`, jsonHeader(storeToken))
     .then((res) => {
       const { accessToken } = res.data;
-      localStorage.setItem("store_token", accessToken);
       return res;
     })
     .catch((e) => e.response);
@@ -29,7 +28,6 @@ const myStore = createSlice({
   initialState,
   reducers: {
     storeLogout: () => {
-      localStorage.removeItem("store_token");
       return initialState;
     },
     defaultOTP: () => ({
@@ -65,7 +63,6 @@ export const briefShopApi = createAsyncThunk("post/getShopInfo", async () => {
     .get(`brief/store`, jsonHeader(userToken))
     .then((res) => {
       const { accessToken } = res.data;
-      localStorage.setItem("store_token", accessToken);
       return res;
     })
     .catch((e) => e.response);

@@ -4,21 +4,17 @@ import { Box, Grid, Typography, TextField, Button } from "@mui/material";
 import { AccountLeft, PictureSide } from "./components";
 import IconifyIcon from "@/app/components/icon";
 import { useState } from "react";
-import GeneralDetails from "./pages/generalDetails";
+import UserManagement from "./pages/userManagement";
 import Notification from "./pages/notification";
 import Security from "./pages/security";
-import ShippingAddress from "./pages/address";
-import DeleteAccount from "./pages/delete";
 
 const MyAccount = () => {
   const [showing, setShowing] = useState("General Details")
 
   const pages = {
-    general_details: <GeneralDetails />,
+    user_management: <UserManagement />,
     notification: <Notification />,
     password_and_security: <Security />,
-    billing_and_address: <ShippingAddress />,
-    delete_account: <DeleteAccount />
   }
 
   return (
@@ -27,11 +23,9 @@ const MyAccount = () => {
         <Grid container spacing={2}>
           <Grid item xs={12} sm={3}>
             <Box className="bg-white !rounded-xl p-2 py-6">
-              <AccountLeft setShowing={setShowing} showing={showing} title="General Details" />
+              <AccountLeft setShowing={setShowing} showing={showing} title="User Management" />
               <AccountLeft setShowing={setShowing} showing={showing} title="Notification" />
               <AccountLeft setShowing={setShowing} showing={showing} title="Password and Security" />
-              <AccountLeft setShowing={setShowing} showing={showing} title="Billing and Address" />
-              <AccountLeft setShowing={setShowing} showing={showing} title="Delete Account" />
               <Box className="flex h-8 my-2 items-center border-t-2 !mt-6 !text-black hover:!text-pink-500 !pl-4">
                 <Typography
                   variant="body1"

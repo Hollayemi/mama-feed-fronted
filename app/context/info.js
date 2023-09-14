@@ -12,19 +12,19 @@ const DataContext = createContext(defaultProvider);
 
 const DataProvider = ({ children }) => {
   const [localCart, setLocalCart] = useState(
-    localStorage.getItem("offline-cart")?.split("+") || []
+    typeof window !== "undefined" && localStorage.getItem("offline-cart")?.split("+") || []
   );
 
   const handleLocalCartChange = (id) => {
     if (!isLoggedIn()) {
       if (localCart.includes(id)) {
         setLocalCart((prev) => {
-          const NewCart = localStorage.getItem("offline-cart")?.split("+");
+          const NewCart = typeof window !== "undefined" && localStorage.getItem("offline-cart")?.split("+");
           return [...NewCart];
         });
       } else {
         setLocalCart(() => {
-          const prev = localStorage.getItem("offline-cart")?.split("+") || [];
+          const prev = typeof window !== "undefined" && localStorage.getItem("offline-cart")?.split("+") || [];
           return [...prev];
         });
       }
@@ -34,11 +34,11 @@ const DataProvider = ({ children }) => {
   const {
     data: pendingReviews,
     error: reviewsError,
-    loading: reviewsIsLoading,
+    isLoading: reviewsIsLoading,
   } = useSWR("/user/pending-reviews");
   const {
     data: cartData,
-    loading: cartLoading,
+    isLoading: cartLoading,
     error: cartError,
   } = useSWR(isLoggedIn() ? "/user/cart" : null);
   console.log(cartData);

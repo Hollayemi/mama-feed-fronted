@@ -15,7 +15,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { styled, alpha } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 import useSWR from "swr";
 import Image from "next/image";
 import { useData } from "@/app/hooks/useData";

@@ -61,7 +61,6 @@ export const completeAgentReg = (formData, dispatch, userID, navigate) => {
     .then((res) => {
       toaster({ ...res });
       if (res.type === "success") {
-        localStorage.setItem("agentName", formData.username);
         navigate("/signup");
       }
     })

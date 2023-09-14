@@ -14,7 +14,7 @@ const loginApi = createAsyncThunk("post/loginApi", async (payload) => {
     })
     .then((res) => {
       const { accessToken } = res.data.user;
-      localStorage.setItem("user_token", accessToken);
+      typeof window !== "undefined" && localStorage.setItem("user_token", accessToken);
       return res;
     })
     .catch((err) => err.response);
@@ -27,12 +27,13 @@ export const getAccount = createAsyncThunk("post/loginSlice", async () => {
   const { data } = await mamaApi
     .get(
       `/user/get-account`,
-      jsonHeader(window.localStorage.getItem("user_token"))
+      jsonHeader()
     )
     .then((res) => {
       console.log(res);
       const { accessToken } = res.data.user;
-      localStorage.setItem("user_token", accessToken);
+      typeof window !== "undefined" &&
+        localStorage.setItem("user_token", accessToken);
       return res;
     })
     .catch((e) => console.log(e.response));
@@ -53,8 +54,6 @@ const UserSlice = createSlice({
   reducers: {
     userLogout: () => {
       clearCart();
-      localStorage.removeItem("user_token");
-      localStorage.removeItem("store_token");
       return initialState;
     },
   },
@@ -96,11 +95,13 @@ export const myLogin = (payload, router, dispatch) => {
       console.log(res);
       toaster({ ...res });
       if (res.type === "success") {
-        const getOfflineCart = localStorage.getItem("offline-cart");
+        const getOfflineCart =
+          typeof window !== "undefined" && localStorage.getItem("offline-cart");
         console.log(getOfflineCart);
         if (getOfflineCart) {
           dispatch(BulkCart(getOfflineCart.split("+")));
-          localStorage.removeItem("offline-cart")
+          typeof window !== "undefined" &&
+            localStorage.removeItem("offline-cart");
         }
         dispatch(getAccount())
           .then(unwrapResult)

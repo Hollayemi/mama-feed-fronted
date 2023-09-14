@@ -20,7 +20,8 @@ export const ForgotPasswordHandler = (email, navigate, dispatch) => {
     .then((res) => {
       console.log(res);
       if (res.type === "success") {
-        localStorage.setItem("sending-email-to", email);
+        typeof window !== "undefined" &&
+           localStorage.setItem("sending-email-to", email);
         navigate("/email-sent");
       }
     })

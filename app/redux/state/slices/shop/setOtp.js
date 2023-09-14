@@ -36,7 +36,6 @@ export const getOTPhandler = (dispatch, numbers, navigate) => {
       if (res.type === "success") {
         const { accessToken } = res;
         console.log(accessToken);
-        localStorage.setItem("store_token", accessToken);
         await dispatch(getShopInfo());
         await dispatch(myBusinessFiles());
         navigate("/seller/dashboard");

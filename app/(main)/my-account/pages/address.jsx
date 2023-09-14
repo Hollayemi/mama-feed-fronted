@@ -1,4 +1,12 @@
-import { Box, Grid, Typography, TextField, Button } from "@mui/material";
+import {
+  Box,
+  Grid,
+  Typography,
+  TextField,
+  Button,
+  MenuItem,
+  Select,
+} from "@mui/material";
 import Image from "next/image";
 const ShippingAddress = () => {
   const Address = ({ address, selected, isdefault }) => {
@@ -27,9 +35,7 @@ const ShippingAddress = () => {
             }`}
           >
             <Box
-              className={`w-4 h-4 rounded-full ${
-                selected && "bg-pink-500"
-              }`}
+              className={`w-4 h-4 rounded-full ${selected && "bg-pink-500"}`}
             ></Box>
           </Box>
         </Box>
@@ -88,14 +94,56 @@ const ShippingAddress = () => {
               placeholder="Zip Code"
               label="Zip Code"
             />
+
+            <Select
+              // labelId="demo-simple-select-outlined-label"
+              // id="demo-simple-select-outlined"
+              fullWidth
+              sx={{ mb: 2 }}
+              value={10}
+              onChange={() => {}}
+              label="Select an option"
+            >
+              <MenuItem value="">
+                <em>Nigeria</em>
+              </MenuItem>
+              <MenuItem value={10}>United State</MenuItem>
+              <MenuItem value={20}>United Kingdom</MenuItem>
+              <MenuItem value={30}>Canada</MenuItem>
+            </Select>
+
+            <Select
+              // labelId="demo-simple-select-outlined-label"
+              // id="demo-simple-select-outlined"
+              fullWidth
+              sx={{ mb: 2 }}
+              value={10}
+              onChange={() => {}}
+              label="Select an option"
+            >
+              <MenuItem value="">
+                <em>State</em>
+              </MenuItem>
+              <MenuItem value={10}>United State</MenuItem>
+              <MenuItem value={20}>United Kingdom</MenuItem>
+              <MenuItem value={30}>Canada</MenuItem>
+            </Select>
+
             <TextField
+              type="number"
               sx={{ mb: 2 }}
               fullWidth
               id="textarea-outlined"
-              placeholder="First Name"
-              label="First Name"
+              placeholder="Zip Code"
+              label="Zip Code"
             />
-            <Button fullWidth variant="contained" className="h-10 !rounded-full">Add Shipping Address</Button>
+            <Button
+              fullWidth
+              variant="contained"
+              className="h-10 !rounded-full"
+            >
+              Add Shipping Address
+            </Button>
           </Box>
         </Grid>
       </Grid>
