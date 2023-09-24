@@ -20,23 +20,26 @@ import Chip from "../../chip";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { useData } from "@/app/hooks/useData";
 import { isLoggedIn } from "@/app/redux/state/slices/api/setAuthHeaders";
+import { useRouter } from "next/navigation";
 
-const pages = ["Home", "Shop", "About-us", "Contact-Us"];
+const pages = [
+  { name: "Home", link: "/" },
+  { name: "Shop", link: "/shop/All" },
+  { name: "About us", link: "/about-us" },
+  { name: "Contact Us", link: "/contact-us" }
+];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 function HomeTopBar() {
-  const {cart} = useData();
+  const { cart } = useData();
   const theme = useTheme();
+  const router = useRouter()
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
-  const handleOpenUserMenu = (event) => {
-    setAnchorElUser(event.currentTarget);
-  };
-
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
@@ -81,16 +84,17 @@ function HomeTopBar() {
     >
       <Container maxWidth="xl">
         <Toolbar disableGutters bgcolor="white">
-          <IconButton
-            size="large"
-            aria-label="account of current user"
-            aria-controls="menu-appbar"
-            aria-haspopup="true"
-            onClick={handleOpenNavMenu}
-            // color="inherit"
-          >
-            <MenuIcon />
-          </IconButton>
+          <Box className="md:hidden">
+            <IconButton
+              size="large"
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleOpenNavMenu}
+            >
+              <MenuIcon />
+            </IconButton>
+          </Box>
           <Image
             src="/images/logo/logo.png"
             alt="logo"
@@ -120,7 +124,7 @@ function HomeTopBar() {
             >
               {pages.map((page) => (
                 <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
+                  <Typography textAlign="center">{page.name}</Typography>
                 </MenuItem>
               ))}
             </Menu>
@@ -151,18 +155,19 @@ function HomeTopBar() {
             {pages.map((page) => (
               <LinkStyled
                 key={page}
-                href={`/${page.toLocaleLowerCase()}`}
+                href={page.link}
                 sx={{ display: "block" }}
                 color={theme.palette.primary.main}
                 className="px-1 mx-4 font-bold border-b-4 border-white hover:border-pink-500 leading-10"
               >
-                {page.replace("-", " ")}
+                {page.name}
               </LinkStyled>
             ))}
           </Box>
 
           <Box className="flex-grow-0 !flex !items-center">
             <Chip
+              onClick={() => router.push("/shop/All")}
               sx={{ backgroundColor: theme.palette.primary.main }}
               label={<MyCartBtn variant="contained" num={cart.length} />}
               size="small"
@@ -170,12 +175,14 @@ function HomeTopBar() {
             <Button
               bgcolor="white"
               className="!rounded-full !ml-3 !text-xs !hidden md:!flex"
+              onClick={() => router.push("/auth/login")}
             >
               Sign In
             </Button>
             <Button
               variant="contained"
               className="!rounded-full !ml-3 !text-sm !hidden md:!flex"
+              onClick={() => router.push("/auth/create-account")}
             >
               Sign Up
             </Button>

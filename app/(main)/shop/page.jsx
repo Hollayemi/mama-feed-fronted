@@ -1,15 +1,14 @@
 "use client";
 
-import HomeWrapper from "@/app/components/view/home";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
-const ShopPage = () => {
-
-
-  return (
-    <HomeWrapper>
-     
-    </HomeWrapper>
-  );
+const Redirect = () => {
+  const router = useRouter();
+  useEffect(() => {
+    router.replace("/shop/All");
+  });
+  return <h4>redirecting...</h4>;
 };
 
-export default ShopPage;
+export default Redirect;

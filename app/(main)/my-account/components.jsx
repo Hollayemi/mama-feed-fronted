@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { Box, Typography } from "@mui/material";
 import Image from "next/image";
 
@@ -16,17 +17,17 @@ export const AccountLeft = ({ title, setShowing, showing, isRead }) => {
   );
 };
 
-export const PictureSide = () => {
+export const PictureSide = ({ pic, updateBtn, deletePicBtn }) => {
   return (
     <Box>
       <Box className="flex items-center">
         <Box>
-          <Image
-            src="/images/avatar/2.png"
+          <img
+            src={pic || "/images/avatar/2.png"}
             alt="profile"
             width={60}
             height={60}
-            className="!rounded-full"
+            className="!rounded-full !w-14 !h-14"
           />
         </Box>
         <Box className="ml-4">
@@ -34,18 +35,22 @@ export const PictureSide = () => {
             Edit your photo
           </Typography>
           <Box className="!flex !items-center mt-2">
-            <Typography
-              variant="body1"
-              className="!text-[14px] !text-red-600 !font-normal"
-            >
-              Delete
-            </Typography>
-            <Typography
-              variant="body1"
-              className="!text-[14px] !text-blue-600 !ml-8 !font-normal"
-            >
-              Update
-            </Typography>
+            <Box onClick={deletePicBtn} className="cursor-pointer">
+              <Typography
+                variant="body1"
+                className="!text-[14px] !text-red-600 !font-normal"
+              >
+                Delete
+              </Typography>
+            </Box>
+            <Box onClick={updateBtn} className="cursor-pointer">
+              <Typography
+                variant="body1"
+                className="!text-[14px] !text-blue-600 !ml-8 !font-normal"
+              >
+                Update
+              </Typography>
+            </Box>
           </Box>
         </Box>
       </Box>

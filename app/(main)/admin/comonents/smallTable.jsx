@@ -30,7 +30,7 @@ import { productData } from "@/app/data/store/productData";
 
 
 
-export const BestSellingProducts = () => {
+export const BestSellingProducts = ({ analytics }) => {
   return (
     <Card className="!rounded-xl">
       <CardHeader
@@ -72,75 +72,76 @@ export const BestSellingProducts = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {productData.map((row) => {
-              return (
-                <TableRow
-                  key={row.prodName}
-                  sx={{
-                    "&:last-child .MuiTableCell-root": {
-                      pb: (theme) => `${theme.spacing(1)} !important`,
-                      border: 0,
-                    },
-                    "& .MuiTableCell-root": {
-                      border: 0,
-                      py: (theme) => `${theme.spacing(1)} !important`,
-                    },
-                    "&:first-of-type .MuiTableCell-root": {
-                      pt: (theme) => `${theme.spacing(1)} !important`,
-                      border: 0,
-                    },
-                  }}
-                >
-                  <TableCell>
-                    <Box className="flex items-center">
-                      <Image
-                        width={50}
-                        height={50}
-                        alt={row.image}
-                        className="mr-3 w-12 h-12"
-                        src={`/images/more/${row.image}.png`}
-                      />
-                      <Box className="w-36 max-w-40 !mr-5">
-                        <Typography
-                          noWrap
-                          className="!text-[12px]"
-                          sx={{ fontWeight: 500, color: "text.secondary" }}
-                        >
-                          {row.prodName}
-                        </Typography>
+            {analytics &&
+              analytics?.bestSellingProducts?.map((row) => {
+                return (
+                  <TableRow
+                    key={row.product.productId}
+                    sx={{
+                      "&:last-child .MuiTableCell-root": {
+                        pb: (theme) => `${theme.spacing(1)} !important`,
+                        border: 0,
+                      },
+                      "& .MuiTableCell-root": {
+                        border: 0,
+                        py: (theme) => `${theme.spacing(1)} !important`,
+                      },
+                      "&:first-of-type .MuiTableCell-root": {
+                        pt: (theme) => `${theme.spacing(1)} !important`,
+                        border: 0,
+                      },
+                    }}
+                  >
+                    <TableCell>
+                      <Box className="flex items-center">
+                        <Image
+                          width={50}
+                          height={50}
+                          alt={row.product.prodName}
+                          className="mr-3 w-12 h-12"
+                          src={row.product.images[0].image}
+                        />
+                        <Box className="w-36 max-w-40 !mr-5">
+                          <Typography
+                            noWrap
+                            className="!text-[12px]"
+                            sx={{ fontWeight: 500, color: "text.secondary" }}
+                          >
+                            {row.product.prodName}
+                          </Typography>
+                        </Box>
                       </Box>
-                    </Box>
-                  </TableCell>
-                  <TableCell>
-                    <Typography
-                      noWrap
-                      className="!text-[12px]"
-                      sx={{ fontWeight: 500, color: "text.secondary" }}
-                    >
-                      {row.category}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography
-                      noWrap
-                      className="!text-[12px] !w-16"
-                      sx={{ fontWeight: 500, color: "text.secondary" }}
-                    >
-                      {row.unit_sold.toLocaleString()}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography
-                      noWrap
-                      className="!text-[12px]"
-                      sx={{ fontWeight: 500, color: "text.secondary" }}
-                    >
-                      {formatCurrency(row.price)}
-                    </Typography>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
+                    </TableCell>
+                    <TableCell>
+                      <Typography
+                        noWrap
+                        className="!text-[12px]"
+                        sx={{ fontWeight: 500, color: "text.secondary" }}
+                      >
+                        {row.product.category[0].category}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography
+                        noWrap
+                        className="!text-[12px] !w-16"
+                        sx={{ fontWeight: 500, color: "text.secondary" }}
+                      >
+                        {row.quantity.toLocaleString()}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography
+                        noWrap
+                        className="!text-[12px]"
+                        sx={{ fontWeight: 500, color: "text.secondary" }}
+                      >
+                        {formatCurrency(row.product.prodPrice)}
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
           </TableBody>
         </Table>
       </TableContainer>

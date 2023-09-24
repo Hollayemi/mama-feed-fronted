@@ -10,8 +10,8 @@ import Security from "./pages/security";
 import ShippingAddress from "./pages/address";
 import DeleteAccount from "./pages/delete";
 
-const MyAccount = () => {
-  const [showing, setShowing] = useState("General Details")
+const MyAccount = ({ searchParams }) => {
+  const [showing, setShowing] = useState(searchParams.to || "General Details")
 
   const pages = {
     general_details: <GeneralDetails />,

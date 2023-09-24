@@ -1,5 +1,7 @@
+import { updateUserPassword } from "@/app/redux/state/slices/auth/updateAccount";
 import { Box, Button, Typography, TextField } from "@mui/material";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 
 const EachSwitch = ({ title, brief, btnName, func }) => {
   return (
@@ -85,6 +87,18 @@ const All = ({ setShowing }) => {
 };
 
 const Password = () => {
+  const dispatch = useDispatch()
+  const [values, setValues] = useState({
+    oldPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+
+  const handleChange = (prop) => (event) => {
+    setValues((prev) => {
+      return { ...prev, [prop]: event.target.value };
+    });
+  };
   return (
     <Box>
       <Typography
@@ -100,6 +114,8 @@ const Password = () => {
           size="medium"
           fullWidth
           id="textarea-outlined"
+          onChange={handleChange("oldPassword")}
+          type="password"
           placeholder="Old Password"
           label="Old Password"
         />
@@ -108,6 +124,8 @@ const Password = () => {
           size="medium"
           fullWidth
           id="textarea-outlined"
+          onChange={handleChange("newPassword")}
+          type="password"
           placeholder="New Password"
           label="New Password"
         />
@@ -116,11 +134,20 @@ const Password = () => {
           size="medium"
           fullWidth
           id="textarea-outlined"
+          onChange={handleChange("confirmPassword")}
+          type="password"
           placeholder="Confirm the new Password"
           label="Confirm the new Password"
         />
 
-        <Button variant="contained" fullWidth className="!rounded-full !mt-5">Change</Button>
+        <Button
+          variant="contained"
+          onClick={() => updateUserPassword(values, dispatch)}
+          fullWidth
+          className="!rounded-full !mt-5"
+        >
+          Change
+        </Button>
       </Box>
     </Box>
   );

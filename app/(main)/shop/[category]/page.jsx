@@ -25,15 +25,16 @@ import { useDispatch } from "react-redux";
 import { useState } from "react";
 
 const ShopPage = ({ params }) => {
-  const { cart, cartData, offline, handleLocalCartChange } = useData();
-  const route = useRouter();
+  const { cart, cartData, offline, handleLocalCartChange, selectedAddress } =
+    useData();
+  const router = useRouter();
   const dispatch = useDispatch();
 
-
+  console.log(selectedAddress);
 
   const [payload, updatePayload] = useState({
     discount: 10,
-    shippingAddress: {},
+    shippingAddress: selectedAddress,
     deliveryDateSpan: "7_days",
     paymentInfo: {},
   });
@@ -53,7 +54,7 @@ const ShopPage = ({ params }) => {
   const Category = ({ image, text }) => {
     return (
       <Box
-        onClick={() => route.push(`${text.replace(" ", "-")}`)}
+        onClick={() => router.push(`${text.replace(" ", "-")}`)}
         className={`!w-24 !h-24 flex flex-col cursor-pointer flex-shrink-0 justify-center items-center m-1.5 border-[3px] ${
           params.category.replace("-", " ") === text
             ? "border-pink-500 bg-pink-50"
@@ -199,9 +200,17 @@ const ShopPage = ({ params }) => {
                 <Typography variant="body-2" className="!font-bold">
                   Shipping Address
                 </Typography>
+                <br />
+                <Typography variant="caption" className="!text-xs">
+                  {payload.shippingAddress.address}
+                </Typography>
 
                 <Button
                   variant="contained"
+                  fullWidth
+                  onClick={() =>
+                    router.push("/my-account?to=billing_and_address")
+                  }
                   className="!bg-white !text-xs !text-gray-500 !h-12 !mt-3 !shadow-none !rounded-2xl !border-dashed !border-2"
                   startIcon={<IconifyIcon icon="tabler:shopping-cart" />}
                 >

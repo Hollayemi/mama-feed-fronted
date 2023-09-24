@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import { useState } from "react";
 import {
@@ -8,6 +9,12 @@ import {
   Menu,
   MenuItem,
   TextField,
+  TableContainer,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
 } from "@mui/material";
 import useSWR from "swr";
 import { CalendarMonth } from "@mui/icons-material";
@@ -26,23 +33,19 @@ import {
 } from "@/app/utils/format";
 import HomeWrapper from "@/app/components/view/home";
 
-const OrderDetails = ({ order }) => {
+const OrderDetails = ({ params }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [subAnchorEl, setSubAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const openSub = Boolean(subAnchorEl);
 
+  console.log(params.orderId);
+
   const {
     data: orderInfo,
     error: orderErr,
     isLoading: orderLoading,
-  } = useSWR(`/branch/order-request?order=${order}`);
-
-  const {
-    data: prodInfo,
-    error: prodErr,
-    isLoading: prodLoading,
-  } = useSWR(`/user/order-product/${order}`);
+  } = useSWR(`/user/order?orderId=${params.orderId}`);
 
   const handleButtonClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -126,12 +129,12 @@ const OrderDetails = ({ order }) => {
     </Menu>
   );
   const row = (!orderLoading && !orderErr && orderInfo?.data[0]) || null;
-  const products = (!prodLoading && !prodErr && prodInfo?.data) || null;
+  const products = [];
   console.log(row, products);
   return (
     <HomeWrapper>
-      <Box className=" mx-10 bg-white !mt-28">
-        {!orderLoading && !orderErr && (
+      <Box className=" !mx-2 md:!mx-10 bg-white !rounded-md p-2 !mt-28">
+        {row && !orderLoading && !orderErr && (
           <Box className="">
             <Grid container spacing={3} className="md:px-5">
               <Grid item xs={6} md={3} className="md:px-5">
@@ -139,7 +142,7 @@ const OrderDetails = ({ order }) => {
                   variant="h5"
                   className="!text-xs !font-bold !leading-10 !flex !items-center"
                 >
-                  Order ID: <b className="ml-3">{row.orderId}m;klmm;l</b>
+                  Order ID: <b className="ml-3">{row.orderSlug}</b>
                 </Typography>
               </Grid>
               <Grid item xs={6} md={3} className="md:px-5">
@@ -148,7 +151,7 @@ const OrderDetails = ({ order }) => {
                   className="!text-xs !font-bold !flex !items-center !leading-10"
                 >
                   <CalendarMonth className="text-[15px]" />{" "}
-                  <b className="ml-2 md:ml-3">{formatDate(row.dateAdded)}.</b>
+                  <b className="ml-2 md:ml-3">{formatDate(row.createdAt)}.</b>
                   <b className="ml-2 md:ml-3">10:00 am</b>
                 </Typography>
               </Grid>
@@ -170,7 +173,7 @@ const OrderDetails = ({ order }) => {
                     <Button
                       fullWidth
                       onClick={handleButtonClick}
-                      className="!flex !items-center !justify-between px-4 !text-gray-300 !bg-gray-500"
+                      className="!flex !items-center !justify-between !text-xs px-4 !text-gray-600 !bg-pink-50"
                     >
                       Change Status{" "}
                       {open ? (
@@ -188,7 +191,7 @@ const OrderDetails = ({ order }) => {
                     <Button
                       variant="contained"
                       fullWidth
-                      className=""
+                      className="!text-xs"
                       disabled
                       startIcon={<Icon icon="tabler:device-floppy" />}
                     >
@@ -199,7 +202,7 @@ const OrderDetails = ({ order }) => {
                     <Button
                       variant="contained"
                       fullWidth
-                      className=""
+                      className="!text-xs"
                       disabled
                       startIcon={<Icon icon="tabler:printer" />}
                     >
@@ -217,13 +220,11 @@ const OrderDetails = ({ order }) => {
                 info={[
                   {
                     key: "First Name",
-                    value: row.customerName,
+                    value: row.shippingAddress.fullname,
                   },
-                  { key: "Email", value: row.email },
-                  { key: "Phone", value: row.phone },
+                  { key: "Email", value: row.userEmail },
+                  { key: "Phone", value: row.userPhone },
                 ]}
-                btnText="View User"
-                btnFunc={() => {}}
               />
 
               <DetailsDesign
@@ -231,18 +232,14 @@ const OrderDetails = ({ order }) => {
                 color="red"
                 title="Order Info"
                 info={[
-                  { key: "Delivery Medium", value: row.deliveryMedium },
+                  // { key: "Delivery Medium", value: row.deliveryMedium },
                   {
                     key: "Order Total Price",
-                    value: formatCurrency(row.totalPrice),
+                    value: formatCurrency(row.order_items.totalAmount),
                   },
                   {
                     key: "Est Delivery Date",
-                    value: calculateDateDiff(
-                      row.deliveryDateSpan,
-                      row.dateAdded,
-                      "+"
-                    ),
+                    value: calculateDateDiff("4_days", row.createdAt, "+"),
                   },
                 ]}
               />
@@ -254,21 +251,19 @@ const OrderDetails = ({ order }) => {
                 info={[
                   {
                     key: "Address",
-                    value: formatShippingAddress(row.address),
+                    value: formatShippingAddress(row.shippingAddress),
                   },
                 ]}
-                btnText="Show Map"
-                btnFunc={() => {}}
               />
             </Box>
           </Box>
         )}
 
-        <Grid container spacing={3} className="px-5">
+        <Grid container spacing={3} className="!px-2 md:!px-5">
           <Grid item xs={12} md={5}></Grid>
           <Grid item xs={12} md={7}>
             <TextField
-              sx={{ mt: 4 }}
+              className="md:!mt-4 !mb-4"
               fullWidth
               multiline
               id="textarea-outlined"
@@ -286,33 +281,124 @@ const OrderDetails = ({ order }) => {
         >
           Products
         </Typography>
-        {!prodLoading && !prodErr && (
-          <Box className="w-full !overflow-auto md:!overflow-auto">
-            {/* <OrderProductList rows={products[0].products} /> */}
+        {!orderLoading && !orderErr && (
+          <Box className="w-full !overflow-auto md:!overflow-auto md:px-16">
+            <TableContainer>
+              <Table>
+                <TableHead>
+                  <TableRow
+                    className="!font-bold"
+                    sx={{
+                      "& .MuiTableCell-root": {
+                        py: 0.5,
+                        border: 0,
+                      },
+                    }}
+                  >
+                    <TableCell>Product Name</TableCell>
+                    <TableCell>Price</TableCell>
+                    <TableCell>Quantity</TableCell>
+                    <TableCell>Total</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {row.order_items.products.map((row) => {
+                    console.log(row);
+                    return (
+                      <TableRow
+                        key={row.storeProducts.email}
+                        sx={{
+                          "&:last-child .MuiTableCell-root": {
+                            pb: (theme) => `${theme.spacing(1)} !important`,
+                            border: 0,
+                          },
+                          "& .MuiTableCell-root": {
+                            border: 0,
+                            py: (theme) => `${theme.spacing(1)} !important`,
+                          },
+                          "&:first-of-type .MuiTableCell-root": {
+                            pt: (theme) => `${theme.spacing(1)} !important`,
+                            border: 0,
+                          },
+                        }}
+                      >
+                        <TableCell>
+                          <Box className="flex items-center">
+                            <img
+                              width={50}
+                              height={50}
+                              alt={row.storeProducts.fullname}
+                              className="mr-3 w-12 h-12 "
+                              src={
+                                row.storeProducts.images[0].image ||
+                                "/images/avatar/1.png"
+                              }
+                            />
+                            <Typography
+                              noWrap
+                              className="!text-[12px]"
+                              sx={{ fontWeight: 500, color: "text.secondary" }}
+                            >
+                              {row.storeProducts.prodName}
+                            </Typography>
+                          </Box>
+                        </TableCell>
+                        <TableCell>
+                          <Box className=" max-w-32 !mr-5">
+                            <Typography
+                              noWrap
+                              className="!text-[12px]"
+                              sx={{ fontWeight: 500, color: "text.secondary" }}
+                            >
+                              {formatCurrency(row.storeProducts.prodPrice)}
+                            </Typography>
+                          </Box>
+                        </TableCell>
+                        <TableCell>
+                          <Typography
+                            noWrap
+                            className="!text-[12px]"
+                            sx={{ fontWeight: 500, color: "text.secondary" }}
+                          >
+                            {row.storeProducts.quantity}
+                          </Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Typography
+                            noWrap
+                            className="!text-[12px]"
+                            sx={{ fontWeight: 500, color: "text.secondary" }}
+                          >
+                            {formatCurrency(
+                              row.storeProducts.prodPrice *
+                                row.storeProducts.quantity
+                            )}
+                          </Typography>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </TableContainer>
           </Box>
         )}
-        {!orderLoading && !orderErr && !prodLoading && !prodErr && (
-          <Box className="flex justify-end pr-6 mt-8">
+        {!orderLoading && !orderErr && (
+          <Box className="flex justify-end pr-6 mt-8 md:!px-16">
             <Box>
               <Summarize
                 info={[
                   {
                     key: "Sub-Total",
-                    value: `+ ${formatCurrency(products[0].allSubTotal)}`,
-                  },
-                  {
-                    key: "Way-Billing Fee",
-                    value: `+ ${formatCurrency(row.deliveryFee)}`,
+                    value: `+ ${formatCurrency(row.order_items.totalAmount)}`,
                   },
                   {
                     key: "Discount",
-                    value: `- ${formatCurrency(row.discount)}`,
+                    value: `- ${formatCurrency(10)}`,
                   },
                   {
                     key: "Total",
-                    value: `= ${formatCurrency(
-                      products[0].allSubTotal + row.deliveryFee - row.discount
-                    )}`,
+                    value: `= ${formatCurrency(row.order_items.totalAmount - 10)}`,
                     bold: true,
                   },
                   {

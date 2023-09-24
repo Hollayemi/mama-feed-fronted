@@ -6,18 +6,19 @@ import { useState } from "react";
 import OrderTable from "@/app/components/view/store/tables/OrderTable";
 import { orderColumns } from "./columns";
 import useSWR from "swr";
+import { useRouter } from "next/navigation";
 
 const AdminOrderPage = () => {
-  const { data: orderData, isLoading: orderLoading } = useSWR("/user/order")
+  const router = useRouter()
+  const [showing, setShowing] = useState("all");
+  const { data: orderData, isLoading: orderLoading } = useSWR(`/user/order?status=${showing}`);
 
   console.log(orderData);
-  const [showing, setShowing] = useState("General Details")
+  const [pointer, setPointer] = useState("All Orders");
 
   const onRowClick = (row) => {
     console.log(row);
-    router.push(
-      `/admin/order/`
-    );
+    router.push(`/admin/orders/${row.id}`);
   };
 
   return (
@@ -27,23 +28,27 @@ const AdminOrderPage = () => {
           <Grid item xs={12} sm={3}>
             <Box className="bg-white !rounded-xl p-2 py-6">
               <LeftTab
-                setShowing={setShowing}
-                showing={showing}
+                setPointer={setPointer}
+                setShowing={() => setShowing("all")}
+                pointer={pointer}
                 title="All Orders"
               />
               <LeftTab
-                setShowing={setShowing}
-                showing={showing}
+                setPointer={setPointer}
+                setShowing={() => setShowing("pending")}
+                pointer={pointer}
                 title="New Orders"
               />
               <LeftTab
-                setShowing={setShowing}
-                showing={showing}
+                setPointer={setPointer}
+                setShowing={() => setShowing("completed")}
+                pointer={pointer}
                 title="Completed Orders "
               />
               <LeftTab
-                setShowing={setShowing}
-                showing={showing}
+                setPointer={setPointer}
+                setShowing={() => setShowing("cancelled")}
+                pointer={pointer}
                 title="Cancelled Orders"
               />
             </Box>
@@ -53,11 +58,13 @@ const AdminOrderPage = () => {
               <Typography variant="h5" className="!font-bold !text-sm py-6">
                 Order History
               </Typography>
-              <OrderTable
-                columns={orderColumns}
-                onRowClick={onRowClick}
-                rows={orderData ? orderData.data : []}
-              />
+              {orderData?.data && (
+                <OrderTable
+                  columns={orderColumns}
+                  onRowClick={onRowClick}
+                  rows={orderData.data}
+                />
+              )}
             </Box>
           </Grid>
         </Grid>

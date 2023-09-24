@@ -1,286 +1,211 @@
-import React, { useState } from 'react'
-import { styled, alpha } from '@mui/material/styles';
-import MuiAppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import Typography from '@mui/material/Typography';
-import InputBase from '@mui/material/InputBase';
-import Badge from '@mui/material/Badge';
-import MenuItem from '@mui/material/MenuItem';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight'
-import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
-import SearchIcon from '@mui/icons-material/Search';
-import AccountCircle from '@mui/icons-material/AccountCircle';
-import MailIcon from '@mui/icons-material/Mail';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import MoreIcon from '@mui/icons-material/MoreVert';
+import { useState } from "react";
+import MuiAppBar from "@mui/material/AppBar";
+import { styled, alpha } from "@mui/material/styles";
+import Box from "@mui/material/Box";
+import Toolbar from "@mui/material/Toolbar";
+import Image from "next/image";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import Menu from "@mui/material/Menu";
+import MenuIcon from "@mui/icons-material/Menu";
+import Container from "@mui/material/Container";
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import Tooltip from "@mui/material/Tooltip";
+import MenuItem from "@mui/material/MenuItem";
+import AdbIcon from "@mui/icons-material/Adb";
+import { useTheme } from "@emotion/react";
+import Link from "next/link";
+import Chip from "../../chip";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import { useData } from "@/app/hooks/useData";
+import { isLoggedIn } from "@/app/redux/state/slices/api/setAuthHeaders";
 
-import { useTheme } from '@emotion/react';
-import themeConfig from '@/app/configs/themeConfig'
-import Image from 'next/image';
-import { Avatar } from '@mui/material';
+const pages = ["Home", "Shop", "About-us", "Contact-Us"];
+const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
-const Search = styled('div')(({ theme }) => ({
-  position: 'relative',
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.primary.main, 0.07),
-  '&:hover': {
-    backgroundColor: alpha(theme.palette.primary.main, 0.15),
-  },
-  marginRight: theme.spacing(2),
-  marginLeft: 0,
-  width: '100%',
-  [theme.breakpoints.up('sm')]: {
-    marginLeft: theme.spacing(3),
-    width: 'auto',
-  },
-}));
-
-const SearchIconWrapper = styled('div')(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: '100%',
-  position: 'absolute',
-  pointerEvents: 'none',
-  display: 'flex',
-  color: alpha(theme.palette.common.black, 0.4),
-  alignItems: 'center',
-  justifyContent: 'center',
-}));
-
-const Icons = styled('div')(({ theme }) => ({
-  padding: theme.spacing(1),
-  borderRadius: theme.shape.borderRadius,
-  cursor: "pointer",
-  height: '100%',
-  backgroundColor: "custom.bodyGray",
-  '&:hover': {
-    backgroundColor: alpha(theme.palette.primary.main, 0.1),
-  },
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  color: alpha(theme.palette.primary.main, 0.6),
-}));
-
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: 'inherit',
-  '& .MuiInputBase-input': {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    color: "black",
-    fontWeight: "400",
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: '30ch',
-    },
-  },
-}));
-
-export default function StoreDashboardAppBar({ open, handleDrawerOpen, drawerWidth, handleDrawerClose }) {
+function HomeTopBar() {
+  const { cart } = useData();
   const theme = useTheme();
-  const [anchorEl, setAnchorEl] = useState()
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState()
+  const [anchorElNav, setAnchorElNav] = useState(null);
+  const [anchorElUser, setAnchorElUser] = useState(null);
 
-  const isMenuOpen = Boolean(anchorEl);
-  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-
-  const handleProfileMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
+  const handleOpenNavMenu = (event) => {
+    setAnchorElNav(event.currentTarget);
+  };
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
   };
 
-  const handleMobileMenuClose = () => {
-    setMobileMoreAnchorEl(null);
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
   };
 
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-    handleMobileMenuClose();
-  };
-
-  const handleMobileMenuOpen = (event) => {
-    setMobileMoreAnchorEl(event.currentTarget);
-  };
+  const MyCartBtn = ({ num }) => (
+    <Box className="flex items-center">
+      <ShoppingCartIcon className="text-white !text-sm" />
+      <Box
+        color={theme.palette.primary.main}
+        className="!ml-1 w-4 h-4 bg-white !rounded-full flex items-center !text-sm justify-center font-bold"
+      >
+        {num}
+      </Box>
+    </Box>
+  );
 
   const AppBar = styled(MuiAppBar)(({ theme, open }) => ({
-  zIndex: theme.zIndex.drawer + 1,
-  backgroundColor: "custom.bodyLight",
-  transition: theme.transitions.create(['width', 'margin'], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  ...(open && {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(['width', 'margin'], {
+    zIndex: theme.zIndex.drawer + 1,
+    backgroundColor: "white",
+    transition: theme.transitions.create(["width", "margin", "border"], {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
+      duration: theme.transitions.duration.leavingScreen,
     }),
-  }),
-}));
+  }));
 
-  const menuId = 'primary-search-account-menu';
-  const renderMenu = (
-    <Menu
-      anchorEl={anchorEl}
-      anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
-      id={menuId}
-      keepMounted
-      transformOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
-      open={isMenuOpen}
-      onClose={handleMenuClose}
-    >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-    </Menu>
-  );
+  const LinkStyled = styled(Link)(({ theme }) => ({
+    fontSize: "0.875rem",
+    textDecoration: "none",
 
-  const mobileMenuId = 'primary-search-account-menu-mobile';
-  const renderMobileMenu = (
-    <Menu
-      anchorEl={mobileMoreAnchorEl}
-      anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
-      id={mobileMenuId}
-      keepMounted
-      transformOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
-      open={isMobileMenuOpen}
-      onClose={handleMobileMenuClose}
-      sx={{
-        bgcolor: alpha(theme.palette.common.white, 0.4)
-      }}
-    >
-      <MenuItem>
-        <Icons size="large" aria-label="show 4 new mails" color="inherit">
-          <Badge badgeContent={5} color="success">
-            <MailIcon color="secondary" />
-          </Badge>
-        </Icons>
-        <p>Messages</p>
-      </MenuItem>
-      <MenuItem>
-        <Icons
-          size="large"
-          aria-label="show 17 new notifications"
-          color="inherit"
-        >
-          <Badge badgeContent={17} color="error">
-            <NotificationsIcon />
-          </Badge>
-        </Icons>
-        <p>Notifications</p>
-      </MenuItem>
-      <MenuItem onClick={handleProfileMenuOpen}>
-        <Icons
-          size="large"
-          aria-label="account of current user"
-          aria-controls="primary-search-account-menu"
-          aria-haspopup="true"
-          color="inherit"
-        >
-          <AccountCircle />
-        </Icons>
-        <p>Profile</p>
-      </MenuItem>
-    </Menu>
-  );
+    color: theme.palette.primary.main,
+  }));
 
   return (
-      <AppBar position="fixed" color="inherit" open={open} elevation={1}>
-        <Toolbar className="flex items-center" sx={{ backgroundColor: 'custom.bodyLight' }}>
-          <Icons
+    <AppBar
+      position="static"
+      className=" lg:!px-12 !z-50 !fixed !w-full !top-0"
+      elevation={0}
+    >
+      <Container maxWidth="xl">
+        <Toolbar disableGutters bgcolor="white">
+          <IconButton
             size="large"
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            sx={{ 
-                mr: 2,
-                ...(open && { display: 'none' }),
-            }}
+            aria-label="account of current user"
+            aria-controls="menu-appbar"
+            aria-haspopup="true"
+            onClick={handleOpenNavMenu}
+            // color="inherit"
           >
             <MenuIcon />
-          </Icons>
-          {!open && <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ display: { xs: 'none', sm: 'block' } }}
-          >
-            <Image src={themeConfig.vertical1} width={120} alt="logo" height={80} />
-          </Typography>}
-          {open && 
-            <Box className="flex justify-between items-center relative w-full">
-                <Box
-                elevation={16} 
-                className="shadow-md -ml-10 flex text-black bg-white items-center justify-center cursor-pointer shadow-slate-500 text-4xl w-8 h-8 rounded-full"
-                onClick={handleDrawerClose}
-                >
-                    {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />} 
-                </Box>
-            </Box>
-          }
-          <Box sx={{ flexGrow: 1 }} />
-          <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Search anything"
-              inputProps={{ 'aria-label': 'search' }}
-            />
-          </Search>
-          <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-            <Icons
-              size="large"
-              aria-label="show 17 new notifications"
-              color="inherit"
+          </IconButton>
+          <Image
+            src="/images/logo/logo.png"
+            alt="logo"
+            width={100}
+            height={60}
+            className="w-20 !h-10"
+          />
+
+          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorElNav}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "left",
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "left",
+              }}
+              open={Boolean(anchorElNav)}
+              onClose={handleCloseNavMenu}
+              sx={{
+                display: { xs: "block", md: "none" },
+              }}
             >
-              <Badge badgeContent={17} color="error">
-                <NotificationsIcon />
-              </Badge>
-            </Icons>
-            <Box onClick={handleProfileMenuOpen} className="flex items-center cursor-pointer ml-6">
-              <Avatar alt="Remy Sharp" src="/images/avatar/stephen.jpeg" />
-              <Typography className="font-bold flex items-center text-sm ml-6 text-black">
-                  Creative
-              </Typography>
-              <Box className="text-black flex items-center ml-2">
-                <ArrowDropDownIcon />
-              </Box>
-            </Box>
+              {pages.map((page) => (
+                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                  <Typography textAlign="center">{page}</Typography>
+                </MenuItem>
+              ))}
+            </Menu>
           </Box>
-          <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
-            <Icons
-              size="large"
-              aria-label="show more"
-              aria-controls={mobileMenuId}
-              aria-haspopup="true"
-              onClick={handleMobileMenuOpen}
-              color="inherit"
+          <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
+          <Typography
+            variant="h5"
+            noWrap
+            component="a"
+            href="/"
+            sx={{
+              mr: 2,
+              display: { xs: "flex", md: "none" },
+              flexGrow: 1,
+              fontFamily: "monospace",
+              fontWeight: 700,
+              letterSpacing: ".3rem",
+              color: "inherit",
+              textDecoration: "none",
+            }}
+          >
+            LOGO
+          </Typography>
+          <Box
+            sx={{ flexGrow: 1, display: { xs: "none", md: "flex", ml: 7 } }}
+            className="!ml-7"
+          >
+            {pages.map((page) => (
+              <LinkStyled
+                key={page}
+                href={`/${page.toLocaleLowerCase()}`}
+                sx={{ display: "block" }}
+                color={theme.palette.primary.main}
+                className="px-1 mx-4 font-bold border-b-4 border-white hover:border-pink-500 leading-10"
+              >
+                {page.replace("-", " ")}
+              </LinkStyled>
+            ))}
+          </Box>
+
+          <Box className="flex-grow-0 !flex !items-center">
+            <Chip
+              sx={{ backgroundColor: theme.palette.primary.main }}
+              label={<MyCartBtn variant="contained" num={cart.length} />}
+              size="small"
+            />
+            <Button
+              bgcolor="white"
+              className="!rounded-full !ml-3 !text-xs !hidden md:!flex"
             >
-              <MoreIcon />
-            </Icons>
+              Sign In
+            </Button>
+            <Button
+              variant="contained"
+              className="!rounded-full !ml-3 !text-sm !hidden md:!flex"
+            >
+              Sign Up
+            </Button>
+            {/* <Tooltip title="Open settings">
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                <Avatar alt="Re my Sharp" src="/images/avatar/2.jpg" />
+              </IconButton>
+            </Tooltip> */}
+            <Menu
+              sx={{ mt: "45px" }}
+              id="menu-appbar"
+              anchorEl={anchorElUser}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              open={Boolean(anchorElUser)}
+              onClose={handleCloseUserMenu}
+            >
+              {settings.map((setting) => (
+                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                  <Typography textAlign="center">{setting}</Typography>
+                </MenuItem>
+              ))}
+            </Menu>
           </Box>
         </Toolbar>
-        {renderMobileMenu}
-        {renderMenu}
-      </AppBar>
+      </Container>
+    </AppBar>
   );
 }
+export default HomeTopBar;

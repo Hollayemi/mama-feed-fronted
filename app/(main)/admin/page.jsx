@@ -6,9 +6,21 @@ import { formatCurrency } from "@/app/utils/format";
 import Image from "next/image";
 import OrderTable from "@/app/components/view/store/tables/OrderTable";
 import { orderColumns } from "./orders/columns";
-import { BestSellingProducts, CardStatisticsProfit } from "./comonents/smallTable";
+import {
+  BestSellingProducts,
+  CardStatisticsProfit,
+} from "./comonents/smallTable";
+import useSWR from "swr";
 
 const Dashboard = () => {
+  const { data: anaData, isLoading } = useSWR("/store/analytics");
+  console.log(anaData);
+  const analytics = anaData?.data.dashboardData || null;
+  const myRows = analytics
+    ? analytics?.pendingOrders.map((e, i) => {
+        return { ...e, id: i };
+      })
+    : null;
   return (
     <HomeWrapper>
       <Box className="px-1 md:px-6">
@@ -32,12 +44,14 @@ const Dashboard = () => {
                   <Box className="flex items-start justify-beteen !mt-5">
                     <DigitWithTopTag
                       tag="Today’s Visit"
-                      digit={formatCurrency(230)}
+                      digit={analytics && analytics?.todaysVisit[0]?.count}
                     />
                     <div className="ml-6"></div>
                     <DigitWithTopTag
                       tag="Today’s total sales"
-                      digit={formatCurrency(21349)}
+                      digit={formatCurrency(
+                        analytics && analytics?.todaysSales[0]?.totalAmount
+                      )}
                     />
                   </Box>
                 </Box>
@@ -54,7 +68,8 @@ const Dashboard = () => {
                 <Box className="flex items-center">
                   <Box className="w-3 h-3 rounded-full bg-stone-500 mr-4"></Box>
                   <Typography variant="caption" className="">
-                    5 products are almost out of stock.
+                    {analytics && analytics?.outOfStock} products are almost out
+                    of stock.
                   </Typography>
                 </Box>
                 <Box className="flex items-center text-xs">View product</Box>
@@ -63,7 +78,8 @@ const Dashboard = () => {
                 <Box className="flex items-center">
                   <Box className="w-3 h-3 rounded-full bg-pink-500 mr-4"></Box>
                   <Typography variant="caption" className="">
-                    12 orders need to be fufilled.
+                    {analytics && analytics?.pendingOrders?.length} orders need
+                    to be fufilled.
                   </Typography>
                 </Box>
                 <Box className="flex items-center text-xs">View orders</Box>
@@ -71,7 +87,7 @@ const Dashboard = () => {
             </Box>
           </Grid>
           <Grid item xs={12} sm={6}>
-            <Box className="bg-white rounded-xl px-6 py-5 w-full">
+            <Box className="bg-white rounded-xl px-6 py-7 w-full">
               <Grid container className="bg-white">
                 <Grid item xs={6} md={4}>
                   <DigitWithTopTag
@@ -122,7 +138,7 @@ const Dashboard = () => {
         <Box className="my-7">
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
-              <BestSellingProducts />
+              <BestSellingProducts analytics={analytics} />
             </Grid>
             <Grid item xs={12} sm={6} className="md:!-mt-9 !rounded-xl">
               <CardStatisticsProfit />
@@ -134,7 +150,11 @@ const Dashboard = () => {
           <Typography variant="h5" className="!font-bold !text-sm py-6">
             Order History
           </Typography>
-          <OrderTable columns={orderColumns} onRowClick={() => {}} rows={[]} />
+          {myRows && <OrderTable
+            columns={orderColumns}
+            onRowClick={() => {}}
+            rows={myRows}
+          />}
         </Box>
       </Box>
     </HomeWrapper>
@@ -142,4 +162,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-

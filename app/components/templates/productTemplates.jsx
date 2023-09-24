@@ -148,7 +148,7 @@ export const ProductOnCategory = ({
             handleLocalCartChange(product?._id);
           }}
         >
-          {cartProducts.includes(product._id)
+          {cartProducts?.includes(product._id)
             ? "Remove from Cart"
             : "Add to Cart"}
         </Button>

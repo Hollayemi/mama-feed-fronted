@@ -1,12 +1,15 @@
 import { Box, Typography } from "@mui/material";
 import Image from "next/image";
 
-export const LeftTab = ({ title, setShowing, showing, isRead }) => {
+export const LeftTab = ({ title, setShowing, pointer, setPointer }) => {
   return (
     <Box
-      onClick={() => setShowing(title)}
+      onClick={() => {
+        setShowing();
+        setPointer(title)
+      }}
       className={`flex border-l-4 h-8 my-2 items-center border-transparent ${
-        showing === title ? "border-pink-500 text-pink-500" : "!text-black"
+        pointer === title ? "border-pink-500 text-pink-500" : "!text-black"
       }  hover:border-pink-500 hover:!text-pink-500 !pl-4`}
     >
       <Typography variant="body1" className="!text-[16px] !font-normal">

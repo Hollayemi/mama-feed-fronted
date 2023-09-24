@@ -18,6 +18,7 @@ import { getInitials } from '@/app/utils/get-initials'
 
 // ** Data Import
 import { rows } from '@/app/data/store/productData'
+import { orderColumns } from '@/app/(main)/admin/orders/columns';
 
 
 const escapeRegExp = value => {
@@ -27,10 +28,10 @@ const escapeRegExp = value => {
 
 
 const OrderTable = ({ columns, rows, onRowClick = () => {} }) => {
-  const myRows = rows.map((e, i) => {return { ...e, id: i }})
-  console.log(myRows);
+  
+  console.log(rows, columns);
   // ** States
-  const [data] = useState(myRows);
+  const [data] = useState(rows);
   const [pageSize, setPageSize] = useState(7)
   const [searchText, setSearchText] = useState('')
   const [filteredData, setFilteredData] = useState([])
@@ -56,11 +57,11 @@ const OrderTable = ({ columns, rows, onRowClick = () => {} }) => {
       <Grid
         item
         xs={12}
-        className="!w-[385px] !max-w-[385px] md:!w-full md:!max-w-full overflow-scroll md:overflow-auto border md:border-none shadow md:shadow-none"
+        className="!w-full md:!w-full md:!max-w-full overflow-scroll md:overflow-auto border md:border-none shadow md:shadow-none"
       >
         <DataGrid
           autoHeight
-          columns={columns}
+          columns={orderColumns}
           pageSize={pageSize}
           rowsPerPageOptions={[7, 10, 25, 50]}
           initialState={{

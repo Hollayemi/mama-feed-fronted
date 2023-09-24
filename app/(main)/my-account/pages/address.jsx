@@ -1,3 +1,6 @@
+import IconifyIcon from "@/app/components/icon";
+import { useData } from "@/app/hooks/useData";
+import { deleteAddress, newAddress, selectAddress } from "@/app/redux/state/slices/users/address";
 import {
   Box,
   Grid,
@@ -8,10 +11,37 @@ import {
   Select,
 } from "@mui/material";
 import Image from "next/image";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import useSWR from "swr";
+
 const ShippingAddress = () => {
-  const Address = ({ address, selected, isdefault }) => {
+  const { userInfo, myAddresses } = useData();
+  const dispatch = useDispatch();
+
+
+
+  const [values, setValues] = useState({
+    fullname: userInfo.lastname + " " + userInfo.firstname || "",
+    phone: userInfo.phone || "",
+    address: "",
+    zipcode: "",
+    state: "",
+    country: "",
+  });
+
+  console.log(myAddresses);
+
+  const handleChange = (prop) => (event) => {
+    console.log(prop);
+    setValues((prev) => {
+      return { ...prev, [prop]: event.target.value };
+    });
+  };
+
+  const Address = ({ address, selected, isdefault, id }) => {
     return (
-      <Box className="flex items-start px-4 py-4 border m-3 rounded-xl cursor-pointer hover:bg-gray-50">
+      <Box className="flex items-start px-4 py-4 border relative m-3 rounded-xl cursor-pointer hover:bg-gray-50">
         <Box className="w-16 flex-shrink-0">
           <Image
             src="/images/misc/image 701.png"
@@ -28,7 +58,10 @@ const ShippingAddress = () => {
             </Typography>
           )}
         </Box>
-        <Box className={`w-10 flex-shrink-0 `}>
+        <Box
+          className={`w-10 flex-shrink-0 `}
+          onClick={() => selectAddress(id, dispatch)}
+        >
           <Box
             className={`w-6 h-6 border rounded-full flex items-center justify-center ${
               selected ? "border-pink-500" : "border-gray-200"
@@ -39,111 +72,121 @@ const ShippingAddress = () => {
             ></Box>
           </Box>
         </Box>
+        <Box
+          className="absolute bottom-2 right-2"
+          onClick={() => deleteAddress(id, dispatch)}
+        >
+          <IconifyIcon icon="tabler:trash" className="text-sm text-red-500" />
+        </Box>
       </Box>
     );
   };
   return (
     <Box>
       <Grid container spacing={3}>
-        <Grid xs={12} sm={6}>
+        <Grid item sm={12} md={6}>
           <Box className="p-4 mt-2">
             <Typography variant="body2" className="!font-bold !mb-3">
               Billing and Address
             </Typography>
 
             <Box>
-              <Address
-                isdefault
-                address="123 Main Street, Apartment 4BNew York, NY 10001, USA"
-                selected
-              />
-              <Address address="123 Main Street, Apartment 4BNew York, NY 10001, USA" />
+              {myAddresses &&
+                myAddresses?.data?.map((item, i) => (
+                  <Address
+                    key={i}
+                    isdefault={item.selected}
+                    address={item.address}
+                    id={item._id}
+                    selected={item.selected}
+                  />
+                ))}
             </Box>
           </Box>
         </Grid>
-        <Grid xs={12} sm={6}>
+        <Grid item sm={12} md={6}>
           <Box className="p-4 mt-2">
             <Typography variant="body2" className="!font-bold !mb-3">
               New Address
             </Typography>
-            <TextField
-              sx={{ mb: 2 }}
-              fullWidth
-              id="textarea-outlined"
-              placeholder="Recipient Full Name"
-              label="Recipient Full Name"
-            />
-            <TextField
-              sx={{ mb: 2 }}
-              fullWidth
-              id="textarea-outlined"
-              placeholder="Recipient Phone Number"
-              label="Recipient Phone Number"
-            />
-            <TextField
-              sx={{ mb: 2 }}
-              fullWidth
-              id="textarea-outlined"
-              placeholder="Street Address"
-              label="Street Address"
-            />
-            <TextField
-              sx={{ mb: 2 }}
-              fullWidth
-              id="textarea-outlined"
-              placeholder="Zip Code"
-              label="Zip Code"
-            />
+            <Box className="!ml-2">
+              <TextField
+                sx={{ mb: 2 }}
+                fullWidth
+                id="textarea-outlined"
+                value={values.fullname}
+                placeholder="Recipient Full Name"
+                onChange={handleChange("fullname")}
+                label="Recipient Full Name"
+              />
+              <TextField
+                sx={{ mb: 2 }}
+                fullWidth
+                id="textarea-outlined"
+                value={values.phone}
+                placeholder="Recipient Phone Number"
+                label="Recipient Phone Number"
+                onChange={handleChange("phone")}
+              />
+              <TextField
+                sx={{ mb: 2 }}
+                fullWidth
+                id="textarea-outlined"
+                placeholder="Street Address"
+                value={values.address}
+                label="Street Address"
+                onChange={handleChange("address")}
+              />
+              <TextField
+                sx={{ mb: 2 }}
+                fullWidth
+                id="textarea-outlined"
+                value={values.zipcode}
+                placeholder="Zip Code"
+                label="Zip Code"
+                onChange={handleChange("zipcode")}
+              />
 
-            <Select
-              // labelId="demo-simple-select-outlined-label"
-              // id="demo-simple-select-outlined"
-              fullWidth
-              sx={{ mb: 2 }}
-              value={10}
-              onChange={() => {}}
-              label="Select an option"
-            >
-              <MenuItem value="">
-                <em>Nigeria</em>
-              </MenuItem>
-              <MenuItem value={10}>United State</MenuItem>
-              <MenuItem value={20}>United Kingdom</MenuItem>
-              <MenuItem value={30}>Canada</MenuItem>
-            </Select>
+              <Select
+                // labelId="demo-simple-select-outlined-label"
+                // id="demo-simple-select-outlined"
+                fullWidth
+                sx={{ mb: 2 }}
+                value={values.country}
+                onChange={handleChange("country")}
+                label="Select an option"
+              >
+                <MenuItem value="Nigeria">Nigeria</MenuItem>
+                <MenuItem value="United State">United State</MenuItem>
+                <MenuItem value="United Kingdom">United Kingdom</MenuItem>
+                <MenuItem value="Canada">Canada</MenuItem>
+              </Select>
 
-            <Select
-              // labelId="demo-simple-select-outlined-label"
-              // id="demo-simple-select-outlined"
-              fullWidth
-              sx={{ mb: 2 }}
-              value={10}
-              onChange={() => {}}
-              label="Select an option"
-            >
-              <MenuItem value="">
-                <em>State</em>
-              </MenuItem>
-              <MenuItem value={10}>United State</MenuItem>
-              <MenuItem value={20}>United Kingdom</MenuItem>
-              <MenuItem value={30}>Canada</MenuItem>
-            </Select>
-
-            <TextField
-              type="number"
-              sx={{ mb: 2 }}
-              fullWidth
-              id="textarea-outlined"
-              placeholder="Zip Code"
-              label="Zip Code"
-            />
-            <Button
-              fullWidth
-              variant="contained"
-              className="h-10 !rounded-full"
-            >
-              Add Shipping Address
-            </Button>
+              <Select
+                // labelId="demo-simple-select-outlined-label"
+                // id="demo-simple-select-outlined"
+                fullWidth
+                sx={{ mb: 2 }}
+                value={values.state}
+                onChange={handleChange("state")}
+                label="Select an option"
+              >
+                <MenuItem value="">
+                  <em>State</em>
+                </MenuItem>
+                <MenuItem value="United State">United State</MenuItem>
+                <MenuItem value="United Kingdom">United Kingdom</MenuItem>
+                <MenuItem value="Canada">Canada</MenuItem>
+              </Select>
+              <Button
+                fullWidth
+                variant="contained"
+                className="h-10 !rounded-full"
+                onClick={() => newAddress(values, dispatch)}
+              >
+                Add Shipping Address
+              </Button>
+            </Box>
           </Box>
         </Grid>
       </Grid>

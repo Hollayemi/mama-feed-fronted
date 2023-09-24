@@ -9,7 +9,7 @@ import Notification from "./pages/notification";
 import Security from "./pages/security";
 
 const MyAccount = () => {
-  const [showing, setShowing] = useState("General Details")
+  const [showing, setShowing] = useState("User Management");
 
   const pages = {
     user_management: <UserManagement />,

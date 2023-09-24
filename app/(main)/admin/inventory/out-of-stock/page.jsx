@@ -21,13 +21,11 @@ import Image from "next/image";
 import { productData } from "@/app/data/store/productData";
 import { formatCurrency } from "@/app/utils/format";
 import useSWR from "swr";
-import { useRouter } from "next/navigation";
 
 const InventoryPage = ({ params }) => {
   const { data, loading, error } = useSWR(
-    `/products?category=${params.category.replace("-", " ")}`
+    `/products?stock=70`
   );
-  const router = useRouter();
   const CustomTextField = styled(TextField)({
     "& .MuiOutlinedInput-root": {
       "& fieldset": {
@@ -44,7 +42,7 @@ const InventoryPage = ({ params }) => {
             variant="body2"
             className="!font-bold !text-sm !mb-4 md:mb-0 "
           >
-            Product Inventory
+            Products Out of Stock
           </Typography>
           {/*  */}
           {/*  */}
@@ -65,16 +63,10 @@ const InventoryPage = ({ params }) => {
                 }}
               />
             </Box>
-            <Button
-              variant="contained"
-              className="!h-10 !rounded-sm md:!rounded-full !shadow-none !text-xs !mx-2 md:!mx-4"
-              onClick={() => router.push('out-of-stock')}
-            >
-              Out of Stock
-            </Button>
+            
             <Button
               variant="outlined"
-              className="!h-10 !rounded-sm md:!rounded-full !shadow-none !border-gray-400 !text-gray-400 !text-xs"
+              className="!ml-5 !h-10 !rounded-sm md:!rounded-full !shadow-none !border-gray-400 !text-gray-400 !text-xs"
               startIcon={<IconifyIcon icon="tabler:file-export" />}
             >
               <h6 className="hidden md:block">Export</h6>
@@ -87,42 +79,7 @@ const InventoryPage = ({ params }) => {
         {/*  */}
 
         <Box className=" md:px-10">
-          <Box>
-            <Box className="flex items-center mt-6 overflow-auto py-2">
-              <Category
-                image="/images/misc/all.png"
-                text="All"
-                params={params}
-              />
-              <Category
-                image="/images/misc/boy-category.png"
-                text="Boy's Clothing"
-                params={params}
-              />
-              <Category
-                image="/images/misc/girl-category.png"
-                text="Girl's Clothing"
-                params={params}
-              />
-              <Category
-                image="/images/misc/layette-category.png"
-                text="Layette"
-                params={params}
-              />
-              <Category
-                image="/images/misc/maternity-category.png"
-                text="Maternity"
-                params={params}
-              />
-              <Category image="/images/misc/toy-category.png" text="Toys" />
-            </Box>
-          </Box>
-
-          {/*  */}
-          {/*  */}
-          {/*  */}
-          {/*  */}
-          {/*  */}
+          
           <Box className="mt-10">
             <TableContainer>
               <Table>
