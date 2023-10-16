@@ -9,6 +9,8 @@ import Notification from "./pages/notification";
 import Security from "./pages/security";
 import ShippingAddress from "./pages/address";
 import DeleteAccount from "./pages/delete";
+import { useDispatch } from "react-redux";
+import { userLogout } from "@/app/redux/state/slices/auth/Login";
 
 const MyAccount = ({ searchParams }) => {
   const [showing, setShowing] = useState(searchParams.to || "General Details")
@@ -20,7 +22,7 @@ const MyAccount = ({ searchParams }) => {
     billing_and_address: <ShippingAddress />,
     delete_account: <DeleteAccount />
   }
-
+  const dispatch = useDispatch()
   return (
     <HomeWrapper>
       <Box className="my-2 md:!py-6 px-2 md:!px-16">
@@ -32,7 +34,7 @@ const MyAccount = ({ searchParams }) => {
               <AccountLeft setShowing={setShowing} showing={showing} title="Password and Security" />
               <AccountLeft setShowing={setShowing} showing={showing} title="Billing and Address" />
               <AccountLeft setShowing={setShowing} showing={showing} title="Delete Account" />
-              <Box className="flex h-8 my-2 items-center border-t-2 !mt-6 !text-black hover:!text-pink-500 !pl-4">
+              <Box onClick={() => dispatch(userLogout())} className="flex h-8 my-2 items-center border-t-2 !mt-6 !text-black hover:!text-pink-500 !pl-4">
                 <Typography
                   variant="body1"
                   className="!text-[16px] !font-bold !text-red-500 !py-5 pl-2 !mt-2 cursor-pointer"

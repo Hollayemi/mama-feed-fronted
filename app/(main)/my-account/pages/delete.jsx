@@ -1,7 +1,23 @@
+import { useData } from "@/app/hooks/useData";
+import { deleteAccount } from "@/app/redux/state/slices/auth/updateAccount";
 import { Box, Typography, Button } from  "@mui/material"
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 
 
 const DeleteAccount = () => {
+  const { offline, userInfo } = useData()
+  const router = useRouter();
+  const pathname = usePathname();
+  useEffect(() => {
+    if (offline) {
+      router.replace(`/auth/login?returnUrl=${pathname}`);
+    }
+  }, [router, offline, pathname]);
+
+  const dispatch = useDispatch()
+
   return (
     <Box>
       <Typography variant="body1" className="!font-bold !text-[17px]">
@@ -25,9 +41,11 @@ const DeleteAccount = () => {
           Account Information:
         </Typography>
         <ul className="list-disc pl-5 !text-[13px] mb-5">
-          <li className="mb-2 ml-2">Full Name: [Your Full Name]</li>
-          <li className="mb-2 ml-2">Email Address: [Your Email Address]</li>
-          <li className="mb-2 ml-2">Contact Number: [Your Contact Number]</li>
+          <li className="mb-2 ml-2">
+            Full Name: {`${userInfo.firstname} ${userInfo.lastname}`}
+          </li>
+          <li className="mb-2 ml-2">Email Address: {userInfo.email}</li>
+          <li className="mb-2 ml-2">Contact Number: {userInfo.phone}</li>
         </ul>
         {/* "" */}
         {/* "" */}
@@ -94,7 +112,11 @@ const DeleteAccount = () => {
       </Box>
 
       <Box className="float-right !mt-6 !mb-8">
-        <Button variant="contained" className="!rounded-full !w-60 h-9">
+        <Button
+          variant="contained"
+          className="!rounded-full !w-60 h-9"
+          onClick={() => deleteAccount(dispatch)}
+        >
           Confirm Delete
         </Button>
       </Box>

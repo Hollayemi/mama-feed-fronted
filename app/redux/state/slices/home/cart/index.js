@@ -21,13 +21,13 @@ export const BulkCart = createAsyncThunk("post/bulkcart", async (payload) => {
   return data;
 });
 
-export const cartHandler = (payload, dispatch) => {
-  if (isLoggedIn()) {
+export const cartHandler = (payload, dispatch, offline) => {
+  if (!offline) {
     dispatch(addCart(payload))
       .then(unwrapResult)
       .then((res) => {
         toaster({ ...res });
-        mutate("/user/cart")
+        mutate("/user/cart");
       })
       .catch((e) => {});
   } else {

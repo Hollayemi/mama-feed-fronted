@@ -31,7 +31,7 @@ import {
   formatDate,
   formatShippingAddress,
 } from "@/app/utils/format";
-import HomeWrapper from "@/app/components/view/home";
+import StoreWrapper from "@/app/components/view/store";
 
 const OrderDetails = ({ params }) => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -132,7 +132,7 @@ const OrderDetails = ({ params }) => {
   const products = [];
   console.log(row, products);
   return (
-    <HomeWrapper>
+    <StoreWrapper>
       <Box className=" !mx-2 md:!mx-10 bg-white !rounded-md p-2 !mt-28">
         {row && !orderLoading && !orderErr && (
           <Box className="">
@@ -411,7 +411,7 @@ const OrderDetails = ({ params }) => {
           </Box>
         )}
       </Box>
-    </HomeWrapper>
+    </StoreWrapper>
   );
 };
 

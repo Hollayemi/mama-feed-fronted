@@ -8,6 +8,3 @@ export const jsonHeader = () => {
     return config;
 };
 
-export const isLoggedIn = () => {
-    return Boolean(typeof window !== 'undefined' && localStorage.getItem('user_token'))
-}

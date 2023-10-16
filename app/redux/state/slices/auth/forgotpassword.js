@@ -2,11 +2,11 @@ import { createAsyncThunk, unwrapResult } from "@reduxjs/toolkit";
 
 import toaster from "@/app/configs/toaster";
 
-import martApi from "../api/baseApi";
+import mamaApi from "../api/baseApi";
 
 const forgotPasswordApi = createAsyncThunk("post/FP", async (payload) => {
   console.log(payload);
-  const { data } = await martApi
+  const { data } = await mamaApi
     .post("/user/forgot-password", payload, {})
     .then((res) => res)
     .catch((err) => err.response);
@@ -14,15 +14,13 @@ const forgotPasswordApi = createAsyncThunk("post/FP", async (payload) => {
   return data;
 });
 
-export const ForgotPasswordHandler = (email, navigate, dispatch) => {
+export const ForgotPasswordHandler = (email, dispatch) => {
   dispatch(forgotPasswordApi({ email }))
     .then(unwrapResult)
     .then((res) => {
       console.log(res);
       if (res.type === "success") {
-        typeof window !== "undefined" &&
-           localStorage.setItem("sending-email-to", email);
-        navigate("/email-sent");
+        alert("sent");
       }
     })
     .catch((err) => {

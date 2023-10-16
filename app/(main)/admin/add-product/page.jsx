@@ -10,6 +10,7 @@ import {
 } from "@/app/redux/state/slices/shop/products/productSlice";
 import { useDispatch } from "react-redux";
 import Image from "next/image";
+import StoreWrapper from "@/app/components/view/store";
 
 const ProductPage = () => {
   const dispatch = useDispatch();
@@ -26,18 +27,18 @@ const ProductPage = () => {
   });
   const [files, setFiles] = useState([]);
   const [selectedCSV, setSelectedCSV] = useState(null);
+ 
 
   const handleFileChange = async (e) => {
-    const file = e.target.files[0];
-
-    const base64Files = await convertFileToBase64(file);
-    setSelectedCSV(base64Files);
+    setSelectedCSV(e.target.files[0]);
   };
 
   const handleUpload = () => {
+     let fd = new FormData();
+     fd.append("file", selectedCSV);
     if (selectedCSV) {
-      console.log(selectedCSV);
-      productCsvHandler({csvData: selectedCSV}, dispatch);
+      console.log(fd);
+      productCsvHandler(fd, dispatch);
     }
   };
 
@@ -93,7 +94,7 @@ const ProductPage = () => {
   );
 
   return (
-    <HomeWrapper>
+    <StoreWrapper>
       <Box className="px:2 md:px-16">
         <Box className="flex items-center !my-4">
           <Box
@@ -254,28 +255,31 @@ const ProductPage = () => {
         )}
 
         {showing === "csv" && (
-          <div className="p-4 bg-white rounded-md">
-            <h5 className="text-[14px] font-bold mb-4">Add Product</h5>
-            <Box className="md:px-4 flex flex-col">
-              <TextField
-                type="file"
-                placeholder="Write the description of the product"
-                sx={{ border: 0 }}
-                onChange={handleFileChange}
-                className="bg-gray-50 outline-0"
-              />
-              <Button
-                variant="contained"
-                className="!rounded-full h-11 !text-xs !mt-4 !w-48"
-                onClick={handleUpload}
-              >
-                Add Product
-              </Button>
-            </Box>
-          </div>
+          <form encType="multipart/form-data">
+            {" "}
+            <div className="p-4 bg-white rounded-md">
+              <h5 className="text-[14px] font-bold mb-4">Add Product</h5>
+              <Box className="md:px-4 flex flex-col">
+                <input
+                  type="file"
+                  placeholder="Write the description of the product"
+                  sx={{ border: 0 }}
+                  onChange={handleFileChange}
+                  className="bg-gray-50 outline-0"
+                />
+                <Button
+                  variant="contained"
+                  className="!rounded-full h-11 !text-xs !mt-4 !w-48"
+                  onClick={handleUpload}
+                >
+                  Add Product
+                </Button>
+              </Box>
+            </div>
+          </form>
         )}
       </Box>
-    </HomeWrapper>
+    </StoreWrapper>
   );
 };
 

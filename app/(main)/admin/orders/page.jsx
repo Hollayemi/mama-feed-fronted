@@ -7,6 +7,7 @@ import OrderTable from "@/app/components/view/store/tables/OrderTable";
 import { orderColumns } from "./columns";
 import useSWR from "swr";
 import { useRouter } from "next/navigation";
+import StoreWrapper from "@/app/components/view/store";
 
 const AdminOrderPage = () => {
   const router = useRouter()
@@ -22,7 +23,7 @@ const AdminOrderPage = () => {
   };
 
   return (
-    <HomeWrapper>
+    <StoreWrapper>
       <Box className="my-2 md:!py-6 px-2 md:!px-4">
         <Grid container spacing={2}>
           <Grid item xs={12} sm={3}>
@@ -56,7 +57,7 @@ const AdminOrderPage = () => {
           <Grid item xs={12} sm={8.5}>
             <Box className="w-full h-full bg-white !rounded-md p-4 py-4">
               <Typography variant="h5" className="!font-bold !text-sm py-6">
-                Order History
+                Order History ({pointer})
               </Typography>
               {orderData?.data && (
                 <OrderTable
@@ -69,7 +70,7 @@ const AdminOrderPage = () => {
           </Grid>
         </Grid>
       </Box>
-    </HomeWrapper>
+    </StoreWrapper>
   );
 };
 

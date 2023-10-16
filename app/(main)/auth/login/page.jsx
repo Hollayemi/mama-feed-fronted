@@ -59,8 +59,8 @@ const LoginV1 = () => {
   };
 
   return (
-    <Box className="flex flex-col justify-evenly h-5/6 px-4 md:px-6">
-      <Box className="!flex !flex-col !items-center">
+    <Box className="flex flex-col md:justify-evenly h-5/6 px-4 md:px-6">
+      <Box className="!flex !flex-col !items-center !mb-16 md:!mb-0">
         <Box className="font-bold !flex !items-center !text-[20px] sm:!text-[27px] text-center">
           Welcome Back to{" "}
           <Box sx={{ color: theme.palette.primary.main, ml: 1 }}>

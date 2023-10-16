@@ -11,6 +11,7 @@ import { SWRConfig } from "swr";
 import martApi from "@/app/redux/state/slices/api/baseApi";
 import { jsonHeader } from "../redux/state/slices/api/setAuthHeaders";
 import { DataProvider } from "../context/info";
+import AdminRouteGuard from "../components/HOC/adminGuard";
 
 const metadata = {
   title:
@@ -70,7 +71,9 @@ export default function RootLayout({ children }) {
           <Provider store={store}>
             <DataProvider>
               <PersistGate loading={null} persistor={persistor}>
-                <ThemeComponent>{children}</ThemeComponent>
+                <AdminRouteGuard>
+                  <ThemeComponent>{children}</ThemeComponent>
+                </AdminRouteGuard>
               </PersistGate>
             </DataProvider>
           </Provider>

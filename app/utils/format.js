@@ -271,7 +271,7 @@ export const formatSegmentation = (orders, totalAmount, lastSeen) => {
   );
 };
 
-export const formatCurrency = (amount, currency = "USD", sign = "US") => {
+export const formatCurrency = (amount, currency = "NGN", sign = "NG") => {
   const formattedCurrencyUS = new Intl.NumberFormat(`en-${sign}`, {
     style: "currency",
     currency,

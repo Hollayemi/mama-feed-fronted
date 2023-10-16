@@ -8,6 +8,8 @@ import { useRouter } from "next/navigation";
 import { SpecBox } from "@/app/(main)/shop/[category]/[product]/spec";
 import { useData } from "@/app/hooks/useData";
 import useSWR from "swr";
+import Link from "next/link";
+import { useEffect } from "react";
 
 export const ProductOnShowcase = ({
   image,
@@ -20,12 +22,13 @@ export const ProductOnShowcase = ({
   handleLocalCartChange,
 }) => {
   const dispatch = useDispatch();
+  const { offline } = useData()
   const router = useRouter();
   return (
     <Box className="!w-44 !h-56 m-2 ">
       <Box
         onClick={() =>
-          router.push(`/shop/${category.replaceAll(" ", "-")}/${id}`)
+          router.push(`/shop/${category?.replaceAll(" ", "-")}/${id}`)
         }
       >
         <img
@@ -35,11 +38,8 @@ export const ProductOnShowcase = ({
         />
       </Box>
       <Box className="py-2 px-px">
-        <Box
-          onClick={() =>
-            router.push(`/shop/${category.replaceAll(" ", "-")}/${id}`)
-          }
-        >
+        <Link href={`/shop/${category?.replaceAll(" ", "-")}/${id}`}>
+        <Box>
           <Typography
             variant="body2"
             className="!whitespace-nowrap !font-bold !overflow-hidden !text-ellipsis"
@@ -47,6 +47,7 @@ export const ProductOnShowcase = ({
             {prodName}
           </Typography>
         </Box>
+        </Link>
 
         <Box className="flex items-center justify-between">
           <Typography
@@ -76,8 +77,9 @@ export const ProductOnShowcase = ({
             size="small"
             className="!rounded-full !text-[9px] "
             onClick={() => {
-              cartHandler({ productId: id }, dispatch);
+              cartHandler({ productId: id }, dispatch, offline);
               handleLocalCartChange(id);
+
             }}
           >
             {inCart ? "Remove from cart" : "Add to cart"}
@@ -95,40 +97,42 @@ export const ProductOnCategory = ({
 }) => {
   const dispatch = useDispatch();
   const router = useRouter();
+  const { offline } = useData();
 
   return (
-    <Box className="m-1 p-3 py-4 rounded-xl !w-80 relative bg-white ProductOnCategory">
+    <Box className="m-1 p-3 py-4 rounded-xl md:!w-76 relative bg-white ProductOnCategory">
       <Box className="!flex items-center relative">
-        <img
-          src={product.images && product.images[0].image}
-          className="w-5/12 rounded-xl"
-          alt={product?.prodName}
-          onClick={() =>
-            router.push(
-              `/shop/${product?.category.replaceAll(" ", "-")}/${product._id}`
-            )
-          }
-        />
-        <Box
-          className="pl-2 cursor-pointer"
-          onClick={() =>
-            router.push(
-              `/shop/${product?.category.replaceAll(" ", "-")}/${product._id}`
-            )
-          }
+        <Link
+          href={`/shop/${product?.category?.replaceAll(" ", "-")}/${
+            product._id
+          }`}
+          className="w-5/12 flex-shrink-0"
         >
-          <Typography variant="body2" className="!font-bold">
-            {product?.prodName}
-          </Typography>
-          <Typography variant="h5" className="!mt-1 !text-[11px] !leading-1">
-            {product?.prodInfo}
-          </Typography>
+          <img
+            src={product.images && product.images[0].image}
+            className="w-full h-full rounded-xl"
+            alt={product?.prodName}
+          />
+        </Link>
+        <Link
+          href={`/shop/${product?.category?.replaceAll(" ", "-")}/${
+            product._id
+          }`}
+        >
+          <Box className="pl-2 cursor-pointer">
+            <Typography variant="body2" className="!font-bold">
+              {product?.prodName}
+            </Typography>
+            <Typography variant="h5" className="!mt-1 !text-[11px] !leading-1">
+              {product?.prodInfo}
+            </Typography>
 
-          <Typography variant="body1" className="!font-extrabold">
-            <span className="!font-extrabold text-[10px]">$</span>
-            {product?.prodPrice}
-          </Typography>
-        </Box>
+            <Typography variant="body1" className="!font-extrabold">
+              <span className="!font-extrabold text-[10px]">$</span>
+              {product?.prodPrice}
+            </Typography>
+          </Box>
+        </Link>
 
         <Typography
           variant="caption"
@@ -144,7 +148,7 @@ export const ProductOnCategory = ({
           fullWidth
           startIcon={<IconifyIcon icon="tabler:shopping-cart" />}
           onClick={() => {
-            cartHandler({ productId: product?._id }, dispatch);
+            cartHandler({ productId: product?._id }, dispatch, offline);
             handleLocalCartChange(product?._id);
           }}
         >
@@ -157,7 +161,13 @@ export const ProductOnCategory = ({
   );
 };
 
-export const ProductOnCartView = ({ products: { product, quantity } }) => {
+export const ProductOnCartView = ({
+  products: { product, quantity },
+  cartProducts,
+  handleLocalCartChange,
+}) => {
+   const { offline } = useData();
+  const dispatch = useDispatch();
   return (
     <Box className="!flex !w-full p-2 m-1 items-center relative">
       <img
@@ -185,10 +195,34 @@ export const ProductOnCartView = ({ products: { product, quantity } }) => {
   );
 };
 
-export const OfflineProductOnCartView = ({ product }) => {
+export const OfflineProductOnCartView = ({
+  product,
+  handleLocalCartChange,
+  sumCartTotal,
+}) => {
+  const { offline } = useData();
+  const dispatch = useDispatch();
+  console.log(product);
   const { data, loading, error } = useSWR(`/products?prodId=${product}`);
+
+  useEffect(() => {
+    if (data && data.data[0]) {
+      sumCartTotal((prev) => prev + data.data[0].prodPrice || 0);
+    }
+  }, [data, sumCartTotal]);
+
   return !loading && !error && data ? (
     <Box className="!flex !w-full md:p-2 m-1 items-center relative">
+      <Box
+        onClick={() => {
+          cartHandler({ productId: product }, dispatch, offline);
+          handleLocalCartChange(product);
+          sumCartTotal((prev) => prev - data.data[0].prodPrice);
+        }}
+        className="absolute -top-2 !mt-3 -right-2 bg-pink-500 w-6 h-6 flex items-center justify-center !rounded-full !shadow-xl"
+      >
+        <IconifyIcon icon="tabler:minus" className="!text-[13px] !text-white" />
+      </Box>
       <img
         src={data.data[0].images[0].image}
         className="w-16 h-16 rounded-xl"

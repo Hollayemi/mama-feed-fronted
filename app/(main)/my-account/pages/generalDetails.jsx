@@ -2,13 +2,21 @@
 import { Box, Button, Grid, TextField, Typography } from "@mui/material";
 import { PictureSide } from "../components";
 import FileUploader from "../../admin/add-product/dropZone";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useData } from "@/app/hooks/useData";
 import { updateUserAccount, updateUserPicture } from "@/app/redux/state/slices/auth/updateAccount";
+import { usePathname, useRouter } from "next/navigation";
 
 const GeneralDetails = () => {
-  const { userInfo } = useData();
+  const { userInfo, offline } = useData();
+  const router = useRouter()
+  const pathname = usePathname();
+  useEffect(() => {
+    if (offline) {
+      router.replace(`/auth/login?returnUrl=${pathname}`);
+    }
+  }, [router, offline, pathname]);
 
   const [files, setFiles] = useState([]);
   const [values, setValues] = useState({
@@ -120,15 +128,6 @@ const GeneralDetails = () => {
                 value={values.phone}
                 label="Phone Number"
                 onChange={handleChange("phone")}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                sx={{ mb: 0.5 }}
-                fullWidth
-                id="textarea-outlined"
-                placeholder="Date of Birth"
-                label="Date of Birth"
               />
             </Grid>
           </Grid>

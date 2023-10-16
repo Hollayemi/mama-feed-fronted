@@ -16,7 +16,7 @@ export const SpecBox = ({ select, selected, iscolor, all }) => {
   };
   return (
     <Box className="flex flex-wrap">
-      {all.map((item, i) => (
+      {all?.map((item, i) => (
         <Box
           key={i}
           className={`border relative w-6 h-6 md:w-8 md:h-8 cursor-pointer rounded-md text-xs flex-shrink-0 flex m-1 items-center justify-center ${

@@ -4,6 +4,7 @@ import martApi from "../api/baseApi";
 import { jsonHeader } from "../api/setAuthHeaders";
 import tokens from "@/app/configs/tokens";
 import { mutate } from "swr";
+import { userLogout } from "./Login";
 
 const updateAccountApi = createAsyncThunk(
   "post/updateUserAccount",
@@ -67,7 +68,29 @@ export const updateUserPassword = (payload, dispatch) => {
     .then(unwrapResult)
     .then((res) => {
       toaster({ ...res });
-      // res.type === "success"
+    })
+    .catch((e) => {});
+};
+//
+//
+//
+const deleteAccountApi = createAsyncThunk(
+  "post/updateUserAccount",
+  async () => {
+    const { data } = await martApi
+      .post("/user/update-account", {status: "in-active"}, jsonHeader())
+      .then((res) => res)
+      .catch((e) => e.response);
+    return data;
+  }
+);
+
+export const deleteAccount = (dispatch) => {
+  dispatch(deleteAccountApi())
+    .then(unwrapResult)
+    .then((res) => {
+      toaster({ ...res });
+      res.type === "success" && dispatch(userLogout());
     })
     .catch((e) => {});
 };

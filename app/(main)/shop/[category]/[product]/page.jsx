@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import HomeWrapper from "@/app/components/view/home";
@@ -8,27 +9,29 @@ import { SpecBox } from "./spec";
 import IconifyIcon from "@/app/components/icon";
 import { ReviewTab } from "./components";
 import Link from "next/link";
-import useSWR from 'swr';
+import useSWR from "swr";
 import { useData } from "@/app/hooks/useData";
 import { cartHandler } from "@/app/redux/state/slices/home/cart";
 import { useDispatch } from "react-redux";
 import calculateDiscountedPrice from "@/app/utils/discount";
+import { productsList } from "@/app/redux/state/slices/shop/display/allProducts";
 
 const ProductPage = ({ params }) => {
   const dispatch = useDispatch();
-  const { handleLocalCartChange, cart } = useData();
+  const { handleLocalCartChange, cart, offline } = useData();
   const [color, selectColor] = useState([]);
   const [size, selectSize] = useState([]);
   const allColor = ["green", "red", "blue", "pink"];
   const allSize = ["S", "M", "L", "XL"];
   const { category, product: prodId } = params;
-  const realCate = category.replaceAll("-", " ")
+  const realCate = category.replaceAll("-", " ");
   const { data, loading, error } = useSWR(`/products?prodId=${prodId}`);
 
   console.log(data, loading, error);
 
-  const product = !loading && !error && data ? data.data[0] : {}
-
+  const product = !loading && !error && data ? data.data[0] : {};
+  console.log(product.specifications);
+  const [showingImage, showImage] = useState(null);
   return (
     <HomeWrapper>
       {!loading && !error && data ? (
@@ -53,32 +56,22 @@ const ProductPage = ({ params }) => {
                     className="!mr-0"
                   >
                     <Box className="flex mt-4 md:mt-0  md:flex-col items-center justify-evenly !w-full h-full">
-                      <Image
-                        src="/images/more/6.png"
-                        alt=""
-                        width={150}
-                        height={150}
-                        className="m-3 md:m-0 flex-shrink-0 !w-24 !h-24 !rounded-md"
-                      />
-                      <Image
-                        src="/images/more/8.png"
-                        alt=""
-                        width={150}
-                        height={150}
-                        className="m-3 md:m-0 flex-shrink-0 !w-24 !h-24 !rounded-md"
-                      />
-                      <Image
-                        src="/images/more/9.png"
-                        alt=""
-                        width={150}
-                        height={150}
-                        className="m-3 md:m-0 flex-shrink-0 !w-24 !h-24 !rounded-md"
-                      />
+                      {product.images.map((item, i) => (
+                        <img
+                          src={item.image}
+                          key={i}
+                          onClick={() => showImage(item.image)}
+                          alt=""
+                          width={150}
+                          height={150}
+                          className="m-3 md:m-0 flex-shrink-0 !w-24 !h-24 !rounded-md"
+                        />
+                      ))}
                     </Box>
                   </Grid>
                   <Grid item sx={12} md={9}>
-                    <Image
-                      src={product.images[0].image}
+                    <img
+                      src={showingImage || product.images[0].image}
                       alt=""
                       width={150}
                       height={150}
@@ -101,7 +94,8 @@ const ProductPage = ({ params }) => {
                   />
 
                   <Typography variant="body2" className="!ml-5">
-                    <span className="!mr-1 ">{product.totalReviews || 0}</span>Reviews
+                    <span className="!mr-1 ">{product.totalReviews || 0}</span>
+                    Reviews
                   </Typography>
 
                   <Typography variant="body2" className="!ml-5">
@@ -109,33 +103,39 @@ const ProductPage = ({ params }) => {
                   </Typography>
                 </Box>
 
-                <Box className="flex items-center mt-1">
+                <Box className="flex items-center mt-2">
                   <Typography
                     variant="body2"
-                    className="whitespace-nowrap !text-xl !font-bold"
+                    className="whitespace-nowrap !text-2xl !font-bold"
                   >
                     <span className="!font-extrabold text-xs">$</span>
 
-                    {calculateDiscountedPrice(product.prodPrice, parseInt(product.discount))}
+                    {calculateDiscountedPrice(
+                      product.prodPrice,
+                      parseInt(product.discount[0]?.value || 0)
+                    )}
                   </Typography>
 
-                  <Typography
-                    variant="body2"
-                    className="whitespace-nowrap !text-[15px] !ml-8 !stroke-black !stroke-2 !font-bold"
-                  >
-                    <span className="!font-extrabold text-xs">$</span>
-                    {product.prodPrice}
-                  </Typography>
-
-                  <Box className="!text-[9px] ml-8 bg-red-500 px-1 rounded-sm text-white">
-                    Special Offer
-                  </Box>
-                  <Typography
-                    variant="caption"
-                    className="whitespace-nowrap !text-[12px] !ml-2 !font-bold"
-                  >
-                    {product.discount}% Discount
-                  </Typography>
+                  {product.discount && (
+                    <>
+                      <Typography
+                        variant="body2"
+                        className="whitespace-nowrap !text-[15px] !ml-8 !stroke-black !stroke-2 !font-bold"
+                      >
+                        <span className="!font-extrabold text-xs">$</span>
+                        {product.prodPrice}
+                      </Typography>
+                      <Box className="!text-[9px] ml-8 bg-red-500 px-1 rounded-sm text-white">
+                        Special Offer
+                      </Box>
+                      <Typography
+                        variant="caption"
+                        className="whitespace-nowrap !text-[12px] !ml-2 !font-bold"
+                      >
+                        {product.discount[0]?.value}% Discount
+                      </Typography>
+                    </>
+                  )}
                 </Box>
 
                 <Box className="flex items-center mt-4">
@@ -147,7 +147,7 @@ const ProductPage = ({ params }) => {
                       Color
                     </Typography>
                     <SpecBox
-                      all={product.specifications.Color.split(" ")}
+                      all={product.specifications?.color}
                       select={selectColor}
                       selected={color}
                       iscolor={true}
@@ -161,7 +161,7 @@ const ProductPage = ({ params }) => {
                       Sizes
                     </Typography>
                     <SpecBox
-                      all={product.specifications.Size.split(" ")}
+                      all={product.specifications?.size}
                       select={selectSize}
                       selected={size}
                     />
@@ -175,7 +175,10 @@ const ProductPage = ({ params }) => {
                   </Typography>
 
                   <Typography variant="body2" className="!ml-5">
-                    Quantity: <span className="!ml-2 font-bold">{product.totInStock} Items</span>
+                    Quantity:{" "}
+                    <span className="!ml-2 font-bold">
+                      {product.totInStock} Items
+                    </span>
                   </Typography>
                 </Box>
 
@@ -185,7 +188,11 @@ const ProductPage = ({ params }) => {
                     size="large"
                     className="!rounded-full !h-10 !w-52 !text-xs"
                     onClick={() => {
-                      cartHandler({ productId: product?._id, size, color }, dispatch);
+                      cartHandler(
+                        { productId: product?._id, size, color },
+                        dispatch,
+                        offline
+                      );
                       handleLocalCartChange(product?._id);
                     }}
                   >
@@ -206,7 +213,7 @@ const ProductPage = ({ params }) => {
           </Box>
 
           <Box className="bg-white mt-14 !p-5 !rounded-xl">
-            <ReviewTab productId={prodId}/>
+            <ReviewTab productId={prodId} />
           </Box>
         </Box>
       ) : (

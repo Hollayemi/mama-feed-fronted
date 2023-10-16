@@ -27,13 +27,11 @@ import { useData } from "../hooks/useData";
 import { isLoggedIn } from "../redux/state/slices/api/setAuthHeaders";
 import CountdownTimer from "./countDown";
 import { calculateDateDiff } from "../utils/format";
+import { FlashSales } from "../components/templates/flashSales";
 
 const HomePage = () => {
-  const { data, loading, error } = useSWR("/products");
+  const { data, loading, error } = useSWR("/products?limit=15");
   const { cart, handleLocalCartChange } = useData();
-  
-
- 
 
   const CheckList = ({ name }) => (
     <Box className="flex items-center">
@@ -56,12 +54,7 @@ const HomePage = () => {
 
   const ShopingExperience = ({ image, title, text }) => (
     <Box className="!flex !flex-col !items-center !justify-center w-48 mb-8">
-      <Image
-        src="/images/more/girl.png"
-        alt="img_here"
-        width={60}
-        height={60}
-      />
+      <Image src={image} alt="img_here" width={60} height={60} />
       <Typography className="!ml-4 text-sm !font-bold text-center">
         {title}
       </Typography>
@@ -161,38 +154,49 @@ const HomePage = () => {
             Product Showcase
           </Typography>
 
-          <Box className="flex justify-center !my-5">
-            <Box className="!rounded-full !overflow-hidden border-2 border-gray-400">
-              <CustomTextField
-                id="icons-start-adornment"
-                className="!rounded-full !border-none !outline-none"
-                size="small"
-                sx={{ borderRadius: 50 }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <IconifyIcon icon="tabler:search" />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </Box>
+          <Box className="flex justify-between ">
+            <Box className="flex flex-col md:flex-row justify-between items-center bg-slate-20 w-full !my-5 !mb-8 px-2">
+              <Box className="w-52"></Box>
+              <Box className="!rounded-full !overflow-hidden relative border-2 border-gray-400 h-[44px] !-mr-0 w-full md:w-80">
+                <CustomTextField
+                  id="icons-start-adornment"
+                  className="!rounded-full !border-none !outline-none"
+                  size="small"
+                  sx={{ borderRadius: 50 }}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <IconifyIcon icon="tabler:search" />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Box>
 
-            <Link
-              href="/tobla"
-              className="absolute flex items-center right-32 !mr-3 !text-sm text-center text-pink-500"
-            >
-              <Typography className="!font-bold">
-                See More Collection
-              </Typography>
-              <IconifyIcon icon="tabler:trending-up-3" />
-            </Link>
+              <Link
+                href="/shop/All"
+                className=" !text-sm text-center text-pink-500 mt-4 md:mt-0 flex items-center md:w-52"
+              >
+                <Typography className="!font-bold">
+                  See More Collection
+                </Typography>
+                <IconifyIcon icon="tabler:trending-up-3" />
+              </Link>
+            </Box>
           </Box>
           {!loading && !error ? (
             <Box className="flex justify-center">
               <Grid container spacing={1}>
                 {data?.data?.map((item, i) => (
-                  <Grid item xs={6} key={i} sm={4} md={2.5} className="!mb-14">
+                  <Grid
+                    item
+                    xs={6}
+                    key={i}
+                    sm={4}
+                    md={2.5}
+                    lg={2}
+                    className="!mb-14"
+                  >
                     <ProductOnShowcase
                       image={item.images[0].image}
                       prodName={item.prodName}
@@ -213,9 +217,19 @@ const HomePage = () => {
         </Box>
 
         <Box className="!mt-20">
+          <Typography className="!font-bold !text-2xl text-center">
+            Flash Sales
+          </Typography>
+          <Box className="flex justify-center px-4 mt-10">
+            <Box className="w-full md:w-4/6">
+              <FlashSales />
+            </Box>
+          </Box>
+        </Box>
+        <Box className="!mt-20">
           <Box>
             <Typography className="!font-bold !text-2xl text-center">
-              Flash Sales Items
+              Quick Fire Flash Sales
             </Typography>
 
             <Typography className="text-[11px] text-pink-500 text-center !my-5">

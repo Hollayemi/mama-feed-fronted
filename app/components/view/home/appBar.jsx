@@ -19,23 +19,43 @@ import Link from "next/link";
 import Chip from "../../chip";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { useData } from "@/app/hooks/useData";
-import { isLoggedIn } from "@/app/redux/state/slices/api/setAuthHeaders";
 import { useRouter } from "next/navigation";
+import IconifyIcon from "../../icon";
+import { userLogout } from "@/app/redux/state/slices/auth/Login";
+import { useDispatch, useSelector } from "react-redux";
 
-const pages = [
+const offlineNav = [
   { name: "Home", link: "/" },
   { name: "Shop", link: "/shop/All" },
   { name: "About us", link: "/about-us" },
-  { name: "Contact Us", link: "/contact-us" }
+  { name: "Contact Us", link: "/contact-us" },
 ];
+const onlineNav = [
+  { name: "Home", link: "/" },
+  { name: "Shop", link: "/shop/All" },
+  { name: "Orders", link: "/orders" },
+  { name: "Inbox", link: "/inbox" },
+  { name: "My Account", link: "/my-account" },
+];
+
+
+const pages = {
+  offline: offlineNav,
+  online: onlineNav,
+};
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 function HomeTopBar() {
-  const { cart } = useData();
+  const { cart, offline, userInfo } = useData();
   const theme = useTheme();
-  const router = useRouter()
+  const dispatch = useDispatch()
+  const router = useRouter();
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
+
+  const reducer = useSelector(state => state.reducer)
+
+  console.log(reducer)
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -44,9 +64,7 @@ function HomeTopBar() {
     setAnchorElNav(null);
   };
 
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
+  const activeNav = pages[offline ? "offline" : "online"];
 
   const MyCartBtn = ({ num }) => (
     <Box className="flex items-center">
@@ -95,6 +113,7 @@ function HomeTopBar() {
               <MenuIcon />
             </IconButton>
           </Box>
+
           <Image
             src="/images/logo/logo.png"
             alt="logo"
@@ -122,8 +141,8 @@ function HomeTopBar() {
                 display: { xs: "block", md: "none" },
               }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
+              {activeNav.map((page, d) => (
+                <MenuItem key={d} onClick={handleCloseNavMenu}>
                   <Typography textAlign="center">{page.name}</Typography>
                 </MenuItem>
               ))}
@@ -152,9 +171,9 @@ function HomeTopBar() {
             sx={{ flexGrow: 1, display: { xs: "none", md: "flex", ml: 7 } }}
             className="!ml-7"
           >
-            {pages.map((page) => (
+            {activeNav.map((page, i) => (
               <LinkStyled
-                key={page}
+                key={i}
                 href={page.link}
                 sx={{ display: "block" }}
                 color={theme.palette.primary.main}
@@ -164,7 +183,6 @@ function HomeTopBar() {
               </LinkStyled>
             ))}
           </Box>
-
           <Box className="flex-grow-0 !flex !items-center">
             <Chip
               onClick={() => router.push("/shop/All")}
@@ -172,47 +190,51 @@ function HomeTopBar() {
               label={<MyCartBtn variant="contained" num={cart.length} />}
               size="small"
             />
-            <Button
-              bgcolor="white"
-              className="!rounded-full !ml-3 !text-xs !hidden md:!flex"
-              onClick={() => router.push("/auth/login")}
-            >
-              Sign In
-            </Button>
-            <Button
-              variant="contained"
-              className="!rounded-full !ml-3 !text-sm !hidden md:!flex"
-              onClick={() => router.push("/auth/create-account")}
-            >
-              Sign Up
-            </Button>
-            {/* <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Re my Sharp" src="/images/avatar/2.jpg" />
-              </IconButton>
-            </Tooltip> */}
-            <Menu
-              sx={{ mt: "45px" }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
+            {offline ? (
+              <>
+                <Button
+                  bgcolor="white"
+                  className="!rounded-full !ml-3 !text-xs !hidden md:!flex"
+                  onClick={() => router.push("/auth/login")}
+                >
+                  Sign In
+                </Button>
+                <Button
+                  variant="contained"
+                  className="!rounded-full !ml-3 !text-sm !hidden md:!flex"
+                  onClick={() => router.push("/auth/create-account")}
+                >
+                  Sign Up
+                </Button>
+              </>
+            ) : (
+              <>
+                <Typography
+                  variant="body2"
+                  noWrap
+                  className="!font-bold !text-[14px] !text-ellipsis !whitespace-nowrap !px-3 !text-black !overflow-hidden"
+                >
+                  {userInfo.lastname}
+                </Typography>
+                <IconButton sx={{ p: 0 }}>
+                  <Avatar
+                    alt={userInfo.lastname}
+                    src={userInfo.picture || "/images/misc/no-pic.svg"}
+                  />
+                </IconButton>
+                <Tooltip title="Logout">
+                  <IconButton
+                    sx={{ p: 0 }}
+                    onClick={() => dispatch(userLogout())}
+                  >
+                    <IconifyIcon
+                      icon="tabler:logout"
+                      className="text-pink-500 ml-3 "
+                    />
+                  </IconButton>
+                </Tooltip>
+              </>
+            )}
           </Box>
         </Toolbar>
       </Container>

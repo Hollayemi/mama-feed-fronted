@@ -23,8 +23,8 @@ export const removeAllCart = createAsyncThunk(
   }
 );
 
-export const orderHandler = (payload, dispatch) => {
-  if (isLoggedIn()) {
+export const orderHandler = (payload, dispatch, isOffline) => {
+  if (!isOffline) {
     dispatch(addOrderApi(payload))
       .then(unwrapResult)
       .then((res) => {

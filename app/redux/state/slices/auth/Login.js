@@ -2,19 +2,17 @@ import { createSlice, createAsyncThunk, unwrapResult } from "@reduxjs/toolkit";
 import toaster from "@/app/configs/toaster";
 import { REQUEST_STATUS } from "../constants";
 import mamaApi from "../api/baseApi";
-import { clearCart } from "../home/cart/fetchCart";
 import { jsonHeader } from "../api/setAuthHeaders";
 import tokens from "@/app/configs/tokens";
 import { BulkCart } from "../home/cart";
 
 const loginApi = createAsyncThunk("post/loginApi", async (payload) => {
   const { data } = await mamaApi
-    .post("/user/login", {
-      ...payload,
-    })
+    .post("/user/login", payload)
     .then((res) => {
       const { accessToken } = res.data.user;
-      typeof window !== "undefined" && localStorage.setItem("user_token", accessToken);
+      typeof window !== "undefined" &&
+        localStorage.setItem("user_token", accessToken);
       return res;
     })
     .catch((err) => err.response);
@@ -22,23 +20,23 @@ const loginApi = createAsyncThunk("post/loginApi", async (payload) => {
   return data;
 });
 
-export const getAccount = createAsyncThunk("post/loginSlice", async () => {
-  const userToken = tokens.auth;
-  const { data } = await mamaApi
-    .get(
-      `/user/get-account`,
-      jsonHeader()
-    )
-    .then((res) => {
-      console.log(res);
-      const { accessToken } = res.data.user;
-      typeof window !== "undefined" &&
-        localStorage.setItem("user_token", accessToken);
-      return res;
-    })
-    .catch((e) => console.log(e.response));
-  return data;
-});
+export const getAccount = createAsyncThunk(
+  "post/loginSlice",
+  async (account) => {
+    const userToken = tokens.auth;
+    const { data } = await mamaApi
+      .get(account || `/user/get-account`, jsonHeader())
+      .then((res) => {
+        console.log(res);
+        const { accessToken } = res.data.user;
+        typeof window !== "undefined" &&
+          localStorage.setItem("user_token", accessToken);
+        return res;
+      })
+      .catch((e) => console.log(e.response));
+    return data;
+  }
+);
 
 const initialState = {
   userData: {},
@@ -53,7 +51,8 @@ const UserSlice = createSlice({
   initialState,
   reducers: {
     userLogout: () => {
-      clearCart();
+      localStorage.removeItem("user_token");
+      typeof window !== "undefined" && window.location.replace("/auth/login");
       return initialState;
     },
   },
@@ -65,7 +64,7 @@ const UserSlice = createSlice({
     }),
     [getAccount.fulfilled]: (state, { payload }) => ({
       ...initialState,
-      userData: { ...payload.user },
+      userData: payload?.user,
       status: REQUEST_STATUS.FULFILLED,
       loading: false,
     }),
@@ -106,14 +105,75 @@ export const myLogin = (payload, router, dispatch) => {
         dispatch(getAccount())
           .then(unwrapResult)
           .then((res) => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const returnUrl = urlParams.get("returnUrl");
+            console.log(returnUrl);
             if (!res.user.email) {
-              router.push("/");
+              router.push(returnUrl ? returnUrl : "/");
             }
-            router.push("/");
+            router.push(returnUrl ? returnUrl : "/");
           });
       }
     })
     .catch((err) => {
+      console.log(err);
+      toaster({ message: "No Connection", type: "error" });
+    });
+};
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+const AdminloginApi = createAsyncThunk("post/loginApi", async (payload) => {
+  const { data } = await mamaApi
+    .post("/admin/login", payload, jsonHeader())
+    .then((res) => {
+      const { accessToken } = res.data.user;
+      typeof window !== "undefined" &&
+        localStorage.setItem("user_token", accessToken);
+      return res;
+    })
+    .catch((err) => err.response);
+
+  return data;
+});
+
+export const adminLogin = (payload, router, dispatch) => {
+  dispatch(AdminloginApi(payload))
+    .then(unwrapResult)
+    .then((res) => {
+      console.log(res);
+      toaster({ ...res });
+      if (res.type === "success") {
+        const getOfflineCart =
+          typeof window !== "undefined" && localStorage.getItem("offline-cart");
+        console.log(getOfflineCart);
+        if (getOfflineCart) {
+          dispatch(BulkCart(getOfflineCart.split("+")));
+          typeof window !== "undefined" &&
+            localStorage.removeItem("offline-cart");
+        }
+        dispatch(getAccount("/user/get-admin-account"))
+          .then(unwrapResult)
+          .then((res) => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const returnUrl = urlParams.get("returnUrl");
+            console.log(returnUrl);
+            if (!res.user.email) {
+              router.push(returnUrl ? returnUrl : "/admin");
+            }
+            router.push(returnUrl ? returnUrl : "/admin");
+          });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
       toaster({ message: "No Connection", type: "error" });
     });
 };

@@ -1,6 +1,8 @@
+import { useData } from "@/app/hooks/useData";
 import { updateUserPassword } from "@/app/redux/state/slices/auth/updateAccount";
 import { Box, Button, Typography, TextField } from "@mui/material";
-import { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
 const EachSwitch = ({ title, brief, btnName, func }) => {
@@ -23,6 +25,14 @@ const EachSwitch = ({ title, brief, btnName, func }) => {
 
 const Security = () => {
   const [showing, setShowing] = useState("security");
+  const { userInfo, offline } = useData();
+  const router = useRouter();
+  const pathname = usePathname();
+  useEffect(() => {
+    if (offline) {
+      router.replace(`/auth/login?returnUrl=${pathname}`);
+    }
+  }, [router, offline, pathname]);
   const tabs = {
     security: <All setShowing={setShowing} />,
     password: <Password />,

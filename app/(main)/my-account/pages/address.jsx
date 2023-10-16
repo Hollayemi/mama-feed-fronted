@@ -16,7 +16,7 @@ import { useDispatch } from "react-redux";
 import useSWR from "swr";
 
 const ShippingAddress = () => {
-  const { userInfo, myAddresses } = useData();
+  const { userInfo, myAddresses, offline } = useData();
   const dispatch = useDispatch();
 
 
@@ -31,6 +31,15 @@ const ShippingAddress = () => {
   });
 
   console.log(myAddresses);
+
+  const saveAddress = () => {
+    if(offline){
+      typeof window !== "undefined" &&
+        localStorage.setItem("offline-address", JSON.stringify(values));
+    }else{
+    newAddress(values, dispatch)}
+
+  }
 
   const handleChange = (prop) => (event) => {
     console.log(prop);
@@ -182,7 +191,7 @@ const ShippingAddress = () => {
                 fullWidth
                 variant="contained"
                 className="h-10 !rounded-full"
-                onClick={() => newAddress(values, dispatch)}
+                onClick={saveAddress}
               >
                 Add Shipping Address
               </Button>

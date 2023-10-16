@@ -21,11 +21,24 @@ import Image from "next/image";
 import { productData } from "@/app/data/store/productData";
 import { formatCurrency } from "@/app/utils/format";
 import useSWR from "swr";
+import MyPagination from "@/app/components/templates/Pagination";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import StoreWrapper from "@/app/components/view/store";
 
-const InventoryPage = ({ params }) => {
+const InventoryPage = ({ params, searchParams }) => {
+  const [search, setSearch] = useState("");
+  const router = useRouter();
   const { data, loading, error } = useSWR(
-    `/products?stock=70`
+    `/products?stock=70 &page=${searchParams?.page || 1}&search=${
+      searchParams?.search || "no search"
+    }`
   );
+   const handleEnterKeyPress = (event) => {
+     if (event.key === "Enter") {
+       router.push(`?search=${search}`);
+     }
+   };
   const CustomTextField = styled(TextField)({
     "& .MuiOutlinedInput-root": {
       "& fieldset": {
@@ -35,7 +48,7 @@ const InventoryPage = ({ params }) => {
   });
   console.log(params);
   return (
-    <HomeWrapper>
+    <StoreWrapper>
       <Box className="p-2 py-5 md:p-4 bg-white !rounded-sm md:!rounded-xl !mx-1.5 md:!mx-10">
         <Box className="flex flex-col md:flex-row md:items-center justify-between ">
           <Typography
@@ -47,13 +60,15 @@ const InventoryPage = ({ params }) => {
           {/*  */}
           {/*  */}
           <Box className="flex items-center">
-            <Box className="sm:!rounded-sm md:!rounded-full !overflow-hidden bg-gray-100 border border-gray-400">
-              <CustomTextField
+            <Box className="sm:!rounded-sm !overflow-hidden bg-gray-100 border border-gray-400">
+              <TextField
                 fullWidth
                 id="icons-start-adornment"
-                className="sm:!rounded-sm md:!rounded-full !border-none !outline-none !w-80 !h-10"
+                className="sm:!rounded-sm !border-none !outline-none !w-80 !h-10"
                 size="small"
                 sx={{ borderRadius: 50 }}
+                onKeyDown={handleEnterKeyPress}
+                onChange={(e) => setSearch(e.target.value)}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
@@ -63,7 +78,7 @@ const InventoryPage = ({ params }) => {
                 }}
               />
             </Box>
-            
+
             <Button
               variant="outlined"
               className="!ml-5 !h-10 !rounded-sm md:!rounded-full !shadow-none !border-gray-400 !text-gray-400 !text-xs"
@@ -79,7 +94,6 @@ const InventoryPage = ({ params }) => {
         {/*  */}
 
         <Box className=" md:px-10">
-          
           <Box className="mt-10">
             <TableContainer>
               <Table>
@@ -187,9 +201,19 @@ const InventoryPage = ({ params }) => {
               </Table>
             </TableContainer>
           </Box>
+
+          <Box className="flex justify-center">
+            {data && (
+              <MyPagination
+                totalNumber={data.message.totalResult}
+                currentPage={searchParams.page || 1}
+                searchParams={searchParams}
+              />
+            )}
+          </Box>
         </Box>
       </Box>
-    </HomeWrapper>
+    </StoreWrapper>
   );
 };
 

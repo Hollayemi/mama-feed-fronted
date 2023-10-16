@@ -18,7 +18,6 @@ import { getInitials } from '@/app/utils/get-initials'
 
 // ** Data Import
 import { rows } from '@/app/data/store/productData'
-import { orderColumns } from '@/app/(main)/admin/orders/columns';
 
 
 const escapeRegExp = value => {
@@ -61,7 +60,7 @@ const OrderTable = ({ columns, rows, onRowClick = () => {} }) => {
       >
         <DataGrid
           autoHeight
-          columns={orderColumns}
+          columns={columns}
           pageSize={pageSize}
           rowsPerPageOptions={[7, 10, 25, 50]}
           initialState={{

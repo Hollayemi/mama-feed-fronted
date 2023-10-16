@@ -20,15 +20,26 @@ import Chip from "../../chip";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { useData } from "@/app/hooks/useData";
 import { isLoggedIn } from "@/app/redux/state/slices/api/setAuthHeaders";
+import { useRouter } from "next/navigation";
+import IconifyIcon from "../../icon";
+import { userLogout } from "@/app/redux/state/slices/auth/Login";
+import { useDispatch } from "react-redux";
 
-const pages = ["Home", "Shop", "About-us", "Contact-Us"];
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+const adminNav = [
+  { name: "Dashboard", link: "/" },
+  { name: "Inventory", link: "/admin/inventory" },
+  { name: "Orders", link: "/admin/orders" },
+  // { name: "Inbox", link: "/admin/inbox" },
+  { name: "Campaign", link: "/admin/discount" },
+  { name: "Customers", link: "/admin/customers" },
+  { name: "Settings", link: "/admin/settings" },
+];
 
-function HomeTopBar() {
-  const { cart } = useData();
+function StoreTopBar() {
+  const { userInfo, adminInfo } = useData();
   const theme = useTheme();
+  const dispatch = useDispatch();
   const [anchorElNav, setAnchorElNav] = useState(null);
-  const [anchorElUser, setAnchorElUser] = useState(null);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -36,22 +47,6 @@ function HomeTopBar() {
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
-
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
-
-  const MyCartBtn = ({ num }) => (
-    <Box className="flex items-center">
-      <ShoppingCartIcon className="text-white !text-sm" />
-      <Box
-        color={theme.palette.primary.main}
-        className="!ml-1 w-4 h-4 bg-white !rounded-full flex items-center !text-sm justify-center font-bold"
-      >
-        {num}
-      </Box>
-    </Box>
-  );
 
   const AppBar = styled(MuiAppBar)(({ theme, open }) => ({
     zIndex: theme.zIndex.drawer + 1,
@@ -63,7 +58,7 @@ function HomeTopBar() {
   }));
 
   const LinkStyled = styled(Link)(({ theme }) => ({
-    fontSize: "0.875rem",
+    fontSize: "0.825rem",
     textDecoration: "none",
 
     color: theme.palette.primary.main,
@@ -77,16 +72,18 @@ function HomeTopBar() {
     >
       <Container maxWidth="xl">
         <Toolbar disableGutters bgcolor="white">
-          <IconButton
-            size="large"
-            aria-label="account of current user"
-            aria-controls="menu-appbar"
-            aria-haspopup="true"
-            onClick={handleOpenNavMenu}
-            // color="inherit"
-          >
-            <MenuIcon />
-          </IconButton>
+          <Box className="md:hidden">
+            <IconButton
+              size="large"
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleOpenNavMenu}
+            >
+              <MenuIcon />
+            </IconButton>
+          </Box>
+
           <Image
             src="/images/logo/logo.png"
             alt="logo"
@@ -114,9 +111,9 @@ function HomeTopBar() {
                 display: { xs: "block", md: "none" },
               }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
+              {adminNav.map((page, d) => (
+                <MenuItem key={d} onClick={handleCloseNavMenu}>
+                  <Typography textAlign="center">{page.name}</Typography>
                 </MenuItem>
               ))}
             </Menu>
@@ -144,68 +141,44 @@ function HomeTopBar() {
             sx={{ flexGrow: 1, display: { xs: "none", md: "flex", ml: 7 } }}
             className="!ml-7"
           >
-            {pages.map((page) => (
+            {adminNav.map((page, i) => (
               <LinkStyled
-                key={page}
-                href={`/${page.toLocaleLowerCase()}`}
+                key={i}
+                href={page.link}
                 sx={{ display: "block" }}
                 color={theme.palette.primary.main}
-                className="px-1 mx-4 font-bold border-b-4 border-white hover:border-pink-500 leading-10"
+                className="px-1 mx-3 font-bold border-b-4 border-white hover:border-pink-500 leading-10"
               >
-                {page.replace("-", " ")}
+                {page.name}
               </LinkStyled>
             ))}
           </Box>
-
           <Box className="flex-grow-0 !flex !items-center">
-            <Chip
-              sx={{ backgroundColor: theme.palette.primary.main }}
-              label={<MyCartBtn variant="contained" num={cart.length} />}
-              size="small"
-            />
-            <Button
-              bgcolor="white"
-              className="!rounded-full !ml-3 !text-xs !hidden md:!flex"
+            <Typography
+              variant="body2"
+              noWrap
+              className="!font-bold !text-[14px] !text-ellipsis !whitespace-nowrap !px-3 !text-black !overflow-hidden"
             >
-              Sign In
-            </Button>
-            <Button
-              variant="contained"
-              className="!rounded-full !ml-3 !text-sm !hidden md:!flex"
-            >
-              Sign Up
-            </Button>
-            {/* <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Re my Sharp" src="/images/avatar/2.jpg" />
+              {adminInfo?.name?.split(" ")[0]}
+            </Typography>
+            <IconButton sx={{ p: 0 }}>
+              <Avatar
+                alt={adminInfo.name}
+                src={adminInfo.picture || "/images/misc/no-pic.svg"}
+              />
+            </IconButton>
+            <Tooltip title="Logout">
+              <IconButton sx={{ p: 0 }} onClick={() => dispatch(userLogout())}>
+                <IconifyIcon
+                  icon="tabler:logout"
+                  className="text-pink-500 ml-3 "
+                />
               </IconButton>
-            </Tooltip> */}
-            <Menu
-              sx={{ mt: "45px" }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
+            </Tooltip>
           </Box>
         </Toolbar>
       </Container>
     </AppBar>
   );
 }
-export default HomeTopBar;
+export default StoreTopBar;

@@ -87,7 +87,7 @@ const Account = () => {
   };
 
   return (
-    <Box className="flex flex-col justify-evenly h-5/6 px-4 md:px-12">
+    <Box className="flex flex-col md:justify-evenly h-5/6 px-4 md:px-12">
       <Box className="!flex !flex-col !items-center !mb-10">
         <Box className="font-bold !flex !items-center !text-[20px] sm:!text-[27px] text-center">
           Join the{" "}

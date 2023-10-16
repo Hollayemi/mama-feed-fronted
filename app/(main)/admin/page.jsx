@@ -1,5 +1,4 @@
 "use client";
-import HomeWrapper from "@/app/components/view/home";
 import { Box, Typography, Grid } from "@mui/material";
 import { DigitWithTopTag } from "./comonents/dashboard";
 import { formatCurrency } from "@/app/utils/format";
@@ -11,18 +10,22 @@ import {
   CardStatisticsProfit,
 } from "./comonents/smallTable";
 import useSWR from "swr";
+import StoreWrapper from "@/app/components/view/store";
+import { useData } from "@/app/hooks/useData";
 
 const Dashboard = () => {
   const { data: anaData, isLoading } = useSWR("/store/analytics");
-  console.log(anaData);
+  const { adminInfo } = useData()
   const analytics = anaData?.data.dashboardData || null;
   const myRows = analytics
     ? analytics?.pendingOrders.map((e, i) => {
         return { ...e, id: i };
       })
     : null;
+
+    console.log(adminInfo);
   return (
-    <HomeWrapper>
+    <StoreWrapper>
       <Box className="px-1 md:px-6">
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
@@ -34,7 +37,7 @@ const Dashboard = () => {
                       variant="body1"
                       className="!font-bold !text-[20px] !overflow-hidden !whitespace-nowrap !text-ellipsis"
                     >
-                      Good Afternoon, Amuroko Joy
+                      Good Afternoon, {adminInfo.name}
                     </Typography>
                     <Typography variant="body2" className="">
                       Here’s what is happening in your store today
@@ -150,14 +153,16 @@ const Dashboard = () => {
           <Typography variant="h5" className="!font-bold !text-sm py-6">
             Order History
           </Typography>
-          {myRows && <OrderTable
-            columns={orderColumns}
-            onRowClick={() => {}}
-            rows={myRows}
-          />}
+          {myRows && (
+            <OrderTable
+              columns={orderColumns}
+              onRowClick={() => {}}
+              rows={myRows}
+            />
+          )}
         </Box>
       </Box>
-    </HomeWrapper>
+    </StoreWrapper>
   );
 };
 

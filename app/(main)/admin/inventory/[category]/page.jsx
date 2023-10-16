@@ -22,12 +22,23 @@ import { productData } from "@/app/data/store/productData";
 import { formatCurrency } from "@/app/utils/format";
 import useSWR from "swr";
 import { useRouter } from "next/navigation";
+import MyPagination from "@/app/components/templates/Pagination";
+import { useState } from "react";
+import StoreWrapper from "@/app/components/view/store";
 
-const InventoryPage = ({ params }) => {
-  const { data, loading, error } = useSWR(
-    `/products?category=${params.category.replace("-", " ")}`
-  );
+const InventoryPage = ({ params, searchParams }) => {
+  const [search, setSearch] = useState("");
   const router = useRouter();
+  const { data, loading, error } = useSWR(
+    `/products?category=${params.category.replace("-", " ")}&page=${
+      searchParams?.page || 1
+    }&search=${searchParams?.search || "no search"}`
+    );
+  const handleEnterKeyPress = (event) => {
+    if (event.key === "Enter") {
+      router.push(`?search=${search}`);
+    }
+  };
   const CustomTextField = styled(TextField)({
     "& .MuiOutlinedInput-root": {
       "& fieldset": {
@@ -37,7 +48,7 @@ const InventoryPage = ({ params }) => {
   });
   console.log(params);
   return (
-    <HomeWrapper>
+    <StoreWrapper>
       <Box className="p-2 py-5 md:p-4 bg-white !rounded-sm md:!rounded-xl !mx-1.5 md:!mx-10">
         <Box className="flex flex-col md:flex-row md:items-center justify-between ">
           <Typography
@@ -49,16 +60,21 @@ const InventoryPage = ({ params }) => {
           {/*  */}
           {/*  */}
           <Box className="flex items-center">
-            <Box className="sm:!rounded-sm md:!rounded-full !overflow-hidden bg-gray-100 border border-gray-400">
-              <CustomTextField
+            <Box className="sm:!rounded-sm !overflow-hidden bg-gray-100 border border-gray-400">
+              <TextField
                 fullWidth
                 id="icons-start-adornment"
                 className="sm:!rounded-sm md:!rounded-full !border-none !outline-none !w-80 !h-10"
                 size="small"
+                onKeyDown={handleEnterKeyPress}
+                onChange={(e) => setSearch(e.target.value)}
                 sx={{ borderRadius: 50 }}
                 InputProps={{
                   startAdornment: (
-                    <InputAdornment position="start">
+                    <InputAdornment
+                      position="start"
+                      onClick={() => router.push(`?search=${search}`)}
+                    >
                       <IconifyIcon icon="tabler:search" />
                     </InputAdornment>
                   ),
@@ -68,7 +84,7 @@ const InventoryPage = ({ params }) => {
             <Button
               variant="contained"
               className="!h-10 !rounded-sm md:!rounded-full !shadow-none !text-xs !mx-2 md:!mx-4"
-              onClick={() => router.push('out-of-stock')}
+              onClick={() => router.push("out-of-stock")}
             >
               Out of Stock
             </Button>
@@ -229,10 +245,19 @@ const InventoryPage = ({ params }) => {
                 </TableBody>
               </Table>
             </TableContainer>
+            <Box className="flex justify-center">
+              {data && (
+                <MyPagination
+                  totalNumber={data.message.totalResult}
+                  currentPage={searchParams.page || 1}
+                  searchParams={searchParams}
+                />
+              )}
+            </Box>
           </Box>
         </Box>
       </Box>
-    </HomeWrapper>
+    </StoreWrapper>
   );
 };
 
