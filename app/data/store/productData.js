@@ -1,0 +1,42 @@
+export const productData = [
+  {
+    unit_sold: 34645,
+    category: "Boy’s Clothing",
+    price: 4353543,
+    prodName: "Summer Cotton Baby Boys Clothe...",
+    image: "6",
+    date: `17 Mar ${new Date().getFullYear()}`,
+  },
+  {
+    unit_sold: 453465,
+    category: "Maternity",
+    price: 4353543,
+    prodName: "2 in 1 Pregnant Belts Maternity Be...",
+    image: "7",
+    date: `12 Feb ${new Date().getFullYear()}`,
+  },
+  {
+    unit_sold: 4352,
+    price: 4353543,
+    category: "Girl’s Clothing",
+    prodName: "1 2 3 4 5 6 7 8 9 10 Years Girls D...",
+    image: "8",
+    date: `28 Feb ${new Date().getFullYear()}`,
+  },
+  {
+    unit_sold: 2353345,
+    category: "Girl’s CLothing",
+    price: 4353543,
+    prodName: "Girls Minnie Mouse Cartoon Disn...",
+    image: "9",
+    date: `08 Jan ${new Date().getFullYear()}`,
+  },
+  {
+    unit_sold: 354754,
+    category: "Toys",
+    price: 4353543,
+    prodName: "Baby Puzzle Track Turn Around T...",
+    image: "10",
+    date: `19 Oct ${new Date().getFullYear()}`,
+  },
+];

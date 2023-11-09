@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*{
+    padding: 0px;
+    margin: 0px;
+}
+
+/* .ProductOnCategory-CartBtn{
+    display: none;
+}
+
+.ProductOnCategory:hover .ProductOnCategory-CartBtn{
+    display: block !important;
+} */
+
+.orderParent:hover .indicator {
+    background-color: #F46197;
+}
+
+/* div button{
+    background-color: #F46197 !important;
+    text-transform: none !important;
+} */
+
+.custom-slider {
+    position: relative !important
+}
+
+.slick-prev:before, .slick-next:before{
+    color: #F46197 !important;
+}
+
+.custom-slider .slick-next {
+    position: absolute;
+    top: -10px !important;
+    left: 20px !important;
+    z-index: 10000 !important;
+}
+.custom-slider .slick-prev {
+    position: absolute !important;
+    top: -10px !important;
+    left: -10px !important;
+    z-index: 10000 !important;
+}
