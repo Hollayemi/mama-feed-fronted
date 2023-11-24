@@ -202,7 +202,7 @@ export const TheSubscribeButton = () => {
         variant="contained"
         bgcolor="white"
         size="large"
-        className="!text-xs h-10 !mt-2 md:!mt-0 !rounded-full"
+        className="!text-xs h-10 !mt-2 md:!mt-0 !rounded-full !bg-pink-500"
         onClick={(e) =>
           updateUserAccount({ news_letter: !userInfo.news_letter }, dispatch)
         }

@@ -159,8 +159,8 @@ export const adminLogin = (payload, router, dispatch) => {
             if (!res.user.email) {
               router.push(returnUrl ? returnUrl : "/admin");
             }
-            router.push(returnUrl ? returnUrl : "/admin");
           });
+        router.push("/admin");
       }
     })
     .catch((err) => {

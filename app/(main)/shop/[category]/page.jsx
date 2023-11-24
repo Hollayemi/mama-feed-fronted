@@ -26,16 +26,17 @@ import { FlashSales } from "@/app/components/templates/flashSales";
 import Pagination from "@/app/components/templates/Pagination";
 import { formatCurrency } from "@/app/utils/format";
 
-const ShopPage = ({ params, searchParams }) => {
+const ShopPage = ({ params, searchParams, data:hk }) => {
   const { cart, cartData, offline, handleLocalCartChange, selectedAddress } =
     useData();
-    console.log(cartData);
+  console.log(cartData);
   const router = useRouter();
-  const [cartTotal, sumCartTotal] = useState(0)
+  const [cartTotal, sumCartTotal] = useState(0);
   const dispatch = useDispatch();
-  const [search, setSearch] = useState('')
+  const [search, setSearch] = useState("");
 
   console.log(selectedAddress);
+  console.log(hk);
 
   const [payload, updatePayload] = useState({
     shippingAddress: selectedAddress || {},
@@ -51,7 +52,7 @@ const ShopPage = ({ params, searchParams }) => {
   console.log(data && data.message);
 
   const handleEnterKeyPress = (event) => {
-    if (event.key === 'Enter') {
+    if (event.key === "Enter") {
       router.push(`?search=${search}`);
     }
   };
@@ -75,7 +76,10 @@ const ShopPage = ({ params, searchParams }) => {
         }  rounded-xl  hover:border-pink-500 hover:text-pink-500 hover:bg-pink-50`}
       >
         <Image src={image} alt={text} width={30} height={30} />
-        <Typography variant="caption" className="!mt-2.5 !text-[10px] !text-center">
+        <Typography
+          variant="caption"
+          className="!mt-2.5 !text-[10px] !text-center"
+        >
           {text}
         </Typography>
       </Box>
@@ -269,5 +273,19 @@ const ShopPage = ({ params, searchParams }) => {
     </HomeWrapper>
   );
 };
+
+
+export async function getServerSideProps(context) {
+  // Fetch data based on the dynamic parameter (context.params.id)
+  const id = context.params.id;
+  
+  console.log(id)
+
+  return {
+    props: {
+      data: id,
+    },
+  };
+}
 
 export default ShopPage;

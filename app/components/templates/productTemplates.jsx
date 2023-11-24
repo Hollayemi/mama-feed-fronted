@@ -80,10 +80,7 @@ export const ProductOnShowcase = ({
             variant="contained"
             size="small"
             className="!rounded-full !text-[9px] "
-            onClick={() => {
-              cartHandler({ productId: id }, dispatch, offline);
-              handleLocalCartChange(id);
-            }}
+            onClick={() => {}}
           >
             {inCart ? "Remove from cart" : "Add to cart"}
           </Button>
@@ -147,7 +144,7 @@ export const ProductOnCategory = ({
       <Box className="ProductOnCategory-CartBtn !transition-all delay-200 !duration-200">
         <Button
           variant="contained"
-          className="!mt-5 !rounded-full !text-xs"
+          className="!mt-5 !rounded-full !text-xs !bg-pink-500"
           fullWidth
           startIcon={<IconifyIcon icon="tabler:shopping-cart" />}
           onClick={() => {

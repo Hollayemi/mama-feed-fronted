@@ -29,7 +29,7 @@ export const registerHandler = (payload, router, dispatch) => {
     .then(unwrapResult)
     .then((res) => {
       console.log(res);
-    //   toaster({ ...res });
+      toaster({ ...res });
       console.log("here")
       if (res.type === "success") {
         dispatch(getAccount())

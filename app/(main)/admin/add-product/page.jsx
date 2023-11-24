@@ -85,22 +85,6 @@ const ProductPage = () => {
 
   const [showing, setShowing] = useState("manual");
 
-  const MyTextField = ({ onChange, title, placeholder, value }) => (
-    <div className="flex flex-col items-start mb-6">
-      <h5 className="text-[13px] mb-2">{title}</h5>
-      <TextField
-        type="text"
-        className="h-8 w-full px-3 rounded-md bg-gray-50 border-1"
-        style={{ height: 40 }}
-        size="small"
-        value={value}
-        placeholder={placeholder}
-        onChange={onChange}
-        aria-label="Product title"
-      />
-    </div>
-  );
-
   return (
     <StoreWrapper>
       <Box className="px:2 md:px-16">
@@ -153,6 +137,7 @@ const ProductPage = () => {
                   />
                   <MyTextField
                     title="Product Price"
+                    type="number"
                     placeholder="Enter the amount"
                     onChange={handleChange("prodPrice")}
                     value={values.prodPrice}
@@ -192,6 +177,7 @@ const ProductPage = () => {
                 <Grid item xs={12} md={6}>
                   <MyTextField
                     title="Total in stock"
+                    type="number"
                     placeholder="number of unit left"
                     value={values.totInStock}
                     onChange={handleChange("totInStock")}
@@ -292,3 +278,19 @@ const ProductPage = () => {
 };
 
 export default ProductPage;
+
+const MyTextField = ({ onChange, title, placeholder, value, type="text" }) => (
+  <div className="flex flex-col items-start mb-6">
+    <h5 className="text-[13px] mb-2">{title}</h5>
+    <TextField
+      type={type}
+      className="h-8 w-full px-3 rounded-md bg-gray-50 border-1"
+      style={{ height: 40 }}
+      size="small"
+      value={value}
+      placeholder={placeholder}
+      onChange={onChange}
+      aria-label="Product title"
+    />
+  </div>
+);

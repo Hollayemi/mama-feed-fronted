@@ -127,7 +127,7 @@ const HomePage = ({ searchParams }) => {
 
               <Button
                 variant="contained"
-                className="!rounded-full !mt-6 md:!mt-12 !shadow-none"
+                className="!rounded-full !mt-6 md:!mt-12 !shadow-none !bg-pink-500"
               >
                 Shop now
               </Button>
@@ -204,25 +204,17 @@ const HomePage = ({ searchParams }) => {
           <Box className="flex justify-between ">
             <Box className="flex flex-col md:flex-row justify-between items-center bg-slate-20 w-full !my-5 !mb-8 px-2">
               <Box className="w-52"></Box>
-              <Box className="!rounded-full !overflow-hidden relative border-2 border-gray-400 h-[44px] !-mr-0 w-full md:w-80">
-                <TextField
+              <Box className="!rounded-full !overflow-hidden border-2 border-white focus-within:!border-pink-500 relative h-[44px] !-mr-0 w-full md:w-80">
+                <input
                   id="icons-start-adornment"
-                  variant="outlined"
-                  className="!rounded-full w-full p-2 !-mt-4 md:!-mt-2 !outline-none focus:!ring focus:!ring-indigo-400 focus:!border-indigo-500"
+                  className="!rounded-full w-full h-full pl-10 pr-4 !outline-none"
                   size="large"
-                  sx={{ borderRadius: 50 }}
                   onChange={(e) => setSearch(e.target.value)}
                   onKeyDown={handleEnterKeyPress}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment
-                        position="start"
-                        onClick={() => router.push(`?search=${search}`)}
-                      >
-                        <IconifyIcon icon="tabler:search" />
-                      </InputAdornment>
-                    ),
-                  }}
+                />
+                <IconifyIcon
+                  icon="tabler:search"
+                  className="absolute top-[10px] left-4"
                 />
               </Box>
 
@@ -350,12 +342,12 @@ const HomePage = ({ searchParams }) => {
             </Grid>
 
             <Grid container spacing={3}>
-              <Grid item xs={12} md={6}>
-                <Box className="relative">
+              <Grid item xs={12} md={6} className="!bg-red-300">
+                <Box className="relative w-full h-full">
                   <img
                     src="/images/more/Maternity.png"
                     alt="product_image"
-                    className="!w-full h-[350px] md:h-[550px] rounded-md"
+                    className="!w-full h-full min-h-[350px] object-fill rounded-md"
                   />
                   <Typography
                     variant="body2"

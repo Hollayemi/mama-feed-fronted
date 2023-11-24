@@ -8,6 +8,7 @@ import { ThemeProvider, createTheme, responsiveFontSizes } from '@mui/material/s
 import themeConfig from '@/app/configs/themeConfig'
 
 import DefaultPalette from './palette'
+import Button from './button';
 
 const ThemeComponent = props => {
   // ** Props
@@ -19,11 +20,9 @@ const ThemeComponent = props => {
 
   // ** Continue theme creation and pass merged component overrides to CreateTheme function  
 
-  theme = createTheme(theme,
-    {
-        topography: Topography(theme)
-    }, 
-  )
+  theme = createTheme(theme, {
+    topography: Topography(theme),
+  });
 
   // ** Set responsive font sizes to true
   if (themeConfig.responsiveFontSizes) {
@@ -34,7 +33,6 @@ const ThemeComponent = props => {
   const sm = theme.breakpoints.up("sm");
   const md = theme.breakpoints.up("md");
   const lg = theme.breakpoints.up("lg");
-  console.log(theme);
   return (
     <ThemeProvider theme={theme}>
         <CssBaseline />

@@ -18,6 +18,7 @@ import AdminRouteGuard from "../components/HOC/adminGuard";
 import { Toaster } from "react-hot-toast";
 
 import ReactHotToast from "@/app/styles/react-hot-toast";
+import { Box } from "@mui/material";
 
 //👇 Import our second font
 // import { Open_Sans, Roboto_Mono } from 'next/font/google'
@@ -92,7 +93,7 @@ export default function RootLayout({ children }) {
         <SWRConfig
           value={{
             refreshInterval: false,
-            revalidateOnFocus: false,
+            revalidateOnFocus: true,
             fetcher: async (resource, init) => {
               const getToken = jsonHeader();
               const res = await martApi.get(resource, getToken);
@@ -104,17 +105,19 @@ export default function RootLayout({ children }) {
             <DataProvider>
               <PersistGate loading={null} persistor={persistor}>
                 <AdminRouteGuard>
-                  <ThemeComponent>{children}</ThemeComponent>
+                  <ThemeComponent>
+                    {children}
+                    <ReactHotToast>
+                      <Toaster
+                        position="top-right"
+                        toastOptions={{ className: "react-hot-toast" }}
+                      />
+                    </ReactHotToast>
+                  </ThemeComponent>
                 </AdminRouteGuard>
               </PersistGate>
             </DataProvider>
           </Provider>
-          <ReactHotToast>
-            <Toaster
-              position="top-right"
-              toastOptions={{ className: "react-hot-toast" }}
-            />
-          </ReactHotToast>
         </SWRConfig>
       </body>
     </html>

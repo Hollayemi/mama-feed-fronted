@@ -6,7 +6,7 @@ import Box from '@mui/material/Box'
 
 const ReactHotToast = styled(Box)(({ theme }) => {
   // ** Hook & Var
-
+  
   return {
     '& > div': {
       left: `${theme.spacing(6)} !important`,

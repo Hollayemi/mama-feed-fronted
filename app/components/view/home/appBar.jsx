@@ -53,9 +53,6 @@ function HomeTopBar() {
   const [anchorElNav, setAnchorElNav] = useState(false);
   const [anchorElUser, setAnchorElUser] = useState(null);
 
-  const reducer = useSelector((state) => state.reducer);
-
-  console.log(reducer);
 
   const toggleOpenNavMenu = (event) => {
     setAnchorElNav(!anchorElNav);
@@ -101,7 +98,11 @@ function HomeTopBar() {
       elevation={0}
     >
       <Container maxWidth="xl">
-        <Toolbar disableGutters bgcolor="white" className="flex justify-between items-center">
+        <Toolbar
+          disableGutters
+          bgcolor="white"
+          className="flex justify-between items-center"
+        >
           <Box className="flex items-center">
             <Box className="md:hidden">
               <IconButton
@@ -196,7 +197,7 @@ function HomeTopBar() {
                 </Button>
                 <Button
                   variant="contained"
-                  className="!rounded-full !ml-3 !text-sm !hidden md:!flex"
+                  className="!rounded-full !ml-3 !text-sm !hidden md:!flex !bg-pink-500"
                   onClick={() => router.push("/auth/create-account")}
                 >
                   Sign Up
